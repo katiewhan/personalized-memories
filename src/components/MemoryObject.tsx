@@ -5,8 +5,10 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 interface MemoryObjectProps {
     meshPath: string;
+    videoPath: string;
     position: Vector3;
     scale: Vector3;
+    play: (name: string) => void;
 }
 
 enum MemoryState {
@@ -20,6 +22,12 @@ enum MemoryState {
 function MemoryObject(props: MemoryObjectProps) {
     const gltf = useLoader(GLTFLoader, props.meshPath);
     const [hovered, setHovered] = useState(false);
+    const [count, setCount] = useState(1);
+
+    const onClick = () => {
+        if (count < 4) props.play(`${props.videoPath}-${count}`);
+        setCount(count + 1);
+    };
 
     useEffect(() => {
         document.body.style.cursor = hovered ? 'pointer' : 'auto';
@@ -29,7 +37,7 @@ function MemoryObject(props: MemoryObjectProps) {
         <primitive object={gltf.scene} 
             position={props.position} 
             scale={props.scale} 
-            onClick={() => console.log('click')}
+            onClick={() => onClick()}
             onPointerOver={() => setHovered(true)}
             onPointerOut={() => setHovered(false)}
         />
