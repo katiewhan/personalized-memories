@@ -11,22 +11,19 @@ interface MemoryObjectProps {
     play: (name: string) => void;
 }
 
-enum MemoryState {
-    Idle,
-    Playing,
-    Updating,
-    UpdateReady,
-    Updated
-}
-
 function MemoryObject(props: MemoryObjectProps) {
     const gltf = useLoader(GLTFLoader, props.meshPath);
     const [hovered, setHovered] = useState(false);
     const [count, setCount] = useState(1);
+    const [hasUpdate, setHasUpdate] = useState(false);
 
     const onClick = () => {
+        if (hasUpdate) setHasUpdate(false);
+
         if (count < 4) props.play(`${props.videoPath}-${count}`);
         setCount(count + 1);
+
+        // timeout for update animation
     };
 
     useEffect(() => {

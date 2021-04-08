@@ -27,13 +27,6 @@ function CameraControls(props: CameraControlsProps) {
     useEffect(() => controls.current?.handleResize(), [size]);
     useFrame((state, delta) => controls.current?.update(delta));
 
-    domElement.addEventListener('mouseleave', () => {
-        if (controls.current && props.enabled) controls.current.enabled = false;
-    });
-    domElement.addEventListener('mouseenter', () => {
-        if (controls.current && props.enabled) controls.current.enabled = true;
-    });
-
     return (
         <firstPersonControls ref={controls} args={[camera, domElement]} enabled={props.enabled} movementSpeed={0.8} lookSpeed={0.01} />
     );

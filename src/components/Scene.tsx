@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, Suspense } from 'react';
+import React, { Component, Suspense, useEffect, useRef, useMemo } from 'react';
 import { Canvas, useLoader, useThree, useFrame, extend, ReactThreeFiber } from 'react-three-fiber';
 import { Vector3 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -43,27 +43,68 @@ function PostProcessing() {
     );
 }
 
-function Scene() {
-    const [sceneEnabled, setSceneEnabled] = useState(true);
-    const playVideo = (name: string) => {
-        setSceneEnabled(false);
-    };
+interface SceneState {
+    enabled: boolean;
+    hovered: boolean;
+}
 
-    return (
-        <Canvas camera={{ position: [0, 0, 2] }}>
-            <CameraControls enabled={sceneEnabled} />
-            <PostProcessing />
-            <pointLight position={[5, 5, 5]} args={['#F2DBAE']} />
-            <Suspense fallback={null}>
-                <Wires />
-                <MemoryObject meshPath='assets/models/crane.glb' 
-                    videoPath='Origami' 
-                    play={playVideo}
-                    position={new Vector3(0.1, -0.1, 0.1)} 
-                    scale={new Vector3(0.1, 0.1, 0.1)} />
-            </Suspense>
-        </Canvas>
-    );
+interface SceneProps {
+    startMemory: (name: string) => void;
+}
+
+class Scene extends Component<SceneProps, SceneState> {    
+    constructor (props: SceneProps) {
+        super(props);
+        this.state = { enabled: true, hovered: true };
+    }
+
+    setSceneEnabled(enabled: boolean) {
+        this.setState({ enabled });
+    }
+
+    setHovered(hovered: boolean) {
+        this.setState({ hovered });
+    }
+    
+    playMemory(name: string) {
+        this.setSceneEnabled(false);
+        this.props.startMemory(name);
+    }
+
+    render() {
+        return (
+            <Canvas camera={{ position: [0, 0, 2] }}
+                onMouseEnter={this.setHovered.bind(this, true)}
+                onMouseLeave={this.setHovered.bind(this, false)}>
+                <CameraControls enabled={this.state.enabled && this.state.hovered} />
+                <PostProcessing />
+                <pointLight position={[5, 5, 5]} args={['#F2DBAE']} />
+                <Suspense fallback={null}>
+                    <Wires />
+                    <MemoryObject meshPath='assets/models/crane.glb' 
+                        videoPath='Origami' 
+                        play={this.playMemory.bind(this)}
+                        position={new Vector3(0.1, -0.1, 0.1)} 
+                        scale={new Vector3(0.1, 0.1, 0.1)} />
+                    <MemoryObject meshPath='assets/models/cloud.glb' 
+                        videoPath='RoadTrip' 
+                        play={this.playMemory.bind(this)}
+                        position={new Vector3(-2, -0.4, 0.1)} 
+                        scale={new Vector3(0.1, 0.1, 0.1)} />
+                    <MemoryObject meshPath='assets/models/tennis.glb' 
+                        videoPath='Tennis' 
+                        play={this.playMemory.bind(this)}
+                        position={new Vector3(1, -1, -1)} 
+                        scale={new Vector3(0.1, 0.1, 0.1)} />
+                    <MemoryObject meshPath='assets/models/beauty.glb' 
+                        videoPath='Dog' 
+                        play={this.playMemory.bind(this)}
+                        position={new Vector3(0.5, 1.2, 2)} 
+                        scale={new Vector3(0.05, 0.05, 0.05)} />
+                </Suspense>
+            </Canvas>
+        );
+    }
 }
 
 export default Scene;
