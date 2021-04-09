@@ -7,6 +7,7 @@ import './App.css';
 interface StoryState {
     isPlayingMemory: boolean;
     currentMemoryName: string;
+    isSharingActivity: boolean;
 }
 
 class App extends Component<{}, StoryState> {
@@ -14,7 +15,7 @@ class App extends Component<{}, StoryState> {
 
     constructor (props: {}) {
         super(props);
-        this.state = { isPlayingMemory: false, currentMemoryName: '' };
+        this.state = { isPlayingMemory: false, currentMemoryName: '', isSharingActivity: false };
     }
 
     startMemory(name: string) {

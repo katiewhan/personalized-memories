@@ -110,10 +110,11 @@ class Scene extends Component<SceneProps, SceneState> {
                 <CameraControls enabled={this.state.enabled && this.state.hovered && this.state.loaded} />
                 <PostProcessing />
                 <pointLight position={[3, 3, 3]} args={['#F2DBAE']} />
-                <pointLight position={[-3, -3, -3]} args={['#D0EFF2']} />
+                <pointLight position={[-3, -3, -3]} args={['#7CA692']} />
                 <Suspense fallback={<Loading loadFinished={this.finishLoading.bind(this)}/>}>
                     <Wires />
                     <MemoryObject meshPath='assets/models/crane.glb' 
+                        texturePath='assets/images/crane-texture.png' 
                         videoPath='Origami' 
                         play={this.playMemory.bind(this)}
                         position={new Vector3(0.8, -0.1, -0.5)} 

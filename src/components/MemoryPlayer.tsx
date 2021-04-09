@@ -12,6 +12,7 @@ function MemoryPlayer(props: MemoryPlayerProps) {
         <div className='popup-wrapper'>
             <ReactPlayer url={`https://personalized-memories.s3.amazonaws.com/videos/${props.name}.mp4`} 
                 playing={true}
+                onError={props.endMemory}
                 onEnded={props.endMemory}
                 width='100%'
                 height='auto'
