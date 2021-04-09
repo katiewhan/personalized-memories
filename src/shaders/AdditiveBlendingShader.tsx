@@ -20,6 +20,6 @@ const AdditiveBlendingShader = {
         vec4 add = texture2D( tAdd, vUv );
         gl_FragColor = color + add;
       }`
-  }
-  
-  export default AdditiveBlendingShader;
+}
+
+export default AdditiveBlendingShader;

@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
-import { useLoader } from 'react-three-fiber';
-import { Vector3, TextureLoader, Object3D, Mesh, MeshStandardMaterial } from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { Component } from 'react';
+import { Vector3, Texture, TextureLoader, Object3D, Mesh, MeshStandardMaterial } from 'three';
+import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 interface MemoryObjectProps {
     meshPath: string;
@@ -9,7 +8,13 @@ interface MemoryObjectProps {
     videoPath: string;
     position: Vector3;
     scale: Vector3;
+    enabled: boolean;
     play: (name: string) => void;
+}
+
+interface MemoryObjectState {
+    count: number;
+    hasUpdate: boolean;
 }
 
 function isMesh(object: Object3D): object is Mesh {
@@ -20,61 +25,73 @@ function isMeshStandardMaterial(material: any): material is MeshStandardMaterial
     return material.type === 'MeshStandardMaterial';
 }
 
-function MemoryObject(props: MemoryObjectProps) {
-    const gltf = useLoader(GLTFLoader, props.meshPath);
-    const message = useLoader(TextureLoader, 'assets/images/update-message.png');
-    const texture = useLoader(TextureLoader, props.texturePath);
-    texture.flipY = false;
+class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
+    private gltf?: GLTF;
+    private message?: Texture;
+    private texture?: Texture;
 
-    const [hovered, setHovered] = useState(false);
-    const [count, setCount] = useState(0);
-    const [hasUpdate, setHasUpdate] = useState(false);
+    constructor(props: MemoryObjectProps) {
+        super(props);
+        this.state = { count: 0, hasUpdate: false };
+    }
+    
+    async componentDidMount() {
+        this.gltf = await new GLTFLoader().loadAsync(this.props.meshPath);
 
-    const onClick = () => {
-        if (hasUpdate) setHasUpdate(false);
+        const textureLoader = new TextureLoader();
+        this.message = await textureLoader.loadAsync('assets/images/update-message.png');
+        this.texture = await textureLoader.loadAsync(this.props.texturePath);
+    }
 
-        const newCount = count + 1;
-        if (newCount < 3) setTimeout(() => setHasUpdate(true), 45000);
+    setHovered(hovered: boolean) {
+        document.body.style.cursor = hovered ? 'pointer' : 'auto';
+    }
+
+    onClick() {
+        if (!this.props.enabled) return;
+
+        if (this.state.hasUpdate) this.setState({ hasUpdate: false });
+
+        const newCount = this.state.count + 1;
+        if (newCount < 3) setTimeout(() => this.setState({ hasUpdate: true }), 60000);
 
         if (newCount === 3) {
-            gltf.scene.traverse((object: Object3D) => {
-                if (isMesh(object) && isMeshStandardMaterial(object.material)) {
-                    object.material.map = texture;
+            this.gltf?.scene.traverse((object: Object3D) => {
+                if (isMesh(object) && isMeshStandardMaterial(object.material) && this.texture) {
+                    object.material.map = this.texture;
                 }
             });
         }
 
         if (newCount < 4) {
-            props.play(`${props.videoPath}-${newCount}`);
+            this.props.play(`${this.props.videoPath}-${newCount}`);
         } else {
             // ending pop up
         }
 
-        setCount(newCount);
-    };
+        this.setState({ count: newCount });
+    }
 
-    const renderSprite = () => {
+    renderSprite() {
         return (
             <sprite position={[0, 3, 0]} scale={[2.5, 2, 2]}>
-                <spriteMaterial attach="material" map={message} />
+                <spriteMaterial attach="material" map={this.message} />
             </sprite>
         );
     }
 
-    useEffect(() => {
-        document.body.style.cursor = hovered ? 'pointer' : 'auto';
-    }, [hovered]);
-
-    return (
-        <primitive object={gltf.scene} 
-            position={props.position} 
-            scale={props.scale} 
-            onClick={() => onClick()}
-            onPointerOver={() => setHovered(true)}
-            onPointerOut={() => setHovered(false)}>
-            {hasUpdate ? renderSprite() : null}
-        </primitive>
-    );
+    render() {
+        return this.gltf ? (
+            <primitive object={this.gltf?.scene} 
+                position={this.props.position} 
+                scale={this.props.scale} 
+                onClick={this.onClick.bind(this)}
+                onPointerOver={this.setHovered.bind(this, true)}
+                onPointerOut={this.setHovered.bind(this, false)}>
+                {this.state.hasUpdate ? this.renderSprite() : null}
+            </primitive>
+        ) : null;
+    }
 }
 
 export default MemoryObject;

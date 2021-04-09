@@ -1,59 +1,11 @@
-import React, { Component, useEffect, useRef, useMemo, Suspense } from 'react';
-import { Canvas, useLoader, useThree, useFrame, extend, ReactThreeFiber } from 'react-three-fiber';
+import React, { Component, useEffect, Suspense } from 'react';
+import { Canvas, useLoader } from 'react-three-fiber';
 import { Vector3 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
-// import AdditiveBlendingShader from '../shaders/AdditiveBlendingShader'
 import CameraControls from './CameraControls';
 import MemoryObject from './MemoryObject';
-
-extend({ EffectComposer, BokehPass, RenderPass, ShaderPass, UnrealBloomPass });
-
-declare global {
-    namespace JSX {
-      interface IntrinsicElements {
-        'effectComposer': ReactThreeFiber.Object3DNode<EffectComposer, typeof EffectComposer>;
-        'bokehPass': ReactThreeFiber.Object3DNode<BokehPass, typeof BokehPass>;
-        'renderPass': ReactThreeFiber.Object3DNode<RenderPass, typeof RenderPass>;
-        'shaderPass': ReactThreeFiber.Object3DNode<ShaderPass, typeof ShaderPass>;
-        'unrealBloomPass': ReactThreeFiber.Object3DNode<UnrealBloomPass, typeof UnrealBloomPass>;
-      }
-    }
-}
-
-function Wires() {
-    const gltf = useLoader(GLTFLoader, 'assets/models/wires.glb');
-    return (
-      <primitive object={gltf.scene} position={[0, 0, 0]} scale={[5, 5, 5] }/>
-    );
-}
-
-function PostProcessing() {
-    const { camera, scene, size, gl } = useThree();
-    const composer = useRef<EffectComposer>();
-
-    useEffect(() => {
-        composer.current?.setSize(size.width, size.height);
-    }, [size]);
-    useFrame(() => {
-        composer.current?.render();
-    }, 2);
-
-    const bokehParams = useMemo(() => ({ focus: 0.5, aperture: 0.005, maxblur: 0.002 }), []);
-
-    return (
-        <effectComposer ref={composer} args={[gl]}>
-            <renderPass attachArray='passes' scene={scene} camera={camera} />
-            {/* <shaderPass attachArray='passes' args={[AdditiveBlendingShader]} uniforms-tAdd-value={occlusionRenderTarget.texture} /> */}
-            <bokehPass attachArray='passes' args={[scene, camera, bokehParams]} />
-        </effectComposer>
-    );
-}
+import PostProcessing from './PostProcessing';
 
 interface LoadingProps {
     loadFinished: () => void;
@@ -67,6 +19,13 @@ function Loading(props: LoadingProps) {
         }
     });
     return null;
+}
+
+function Wires() {
+    const gltf = useLoader(GLTFLoader, 'assets/models/wires.glb');
+    return (
+      <primitive object={gltf.scene} position={[0, 0, 0]} scale={[5, 5, 5] }/>
+    );
 }
 
 interface SceneState {
@@ -117,6 +76,7 @@ class Scene extends Component<SceneProps, SceneState> {
                         texturePath='assets/images/crane-texture.png' 
                         videoPath='Origami' 
                         play={this.playMemory.bind(this)}
+                        enabled={this.state.enabled}
                         position={new Vector3(0.8, -0.1, -0.5)} 
                         scale={new Vector3(0.1, 0.1, 0.1)} />
                     {/* <MemoryObject meshPath='assets/models/cloud.glb' 
