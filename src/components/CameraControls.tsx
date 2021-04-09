@@ -28,7 +28,7 @@ function CameraControls(props: CameraControlsProps) {
     useFrame((state, delta) => controls.current?.update(delta));
 
     return (
-        <firstPersonControls ref={controls} args={[camera, domElement]} enabled={props.enabled} movementSpeed={0.8} lookSpeed={0.01} />
+        <firstPersonControls ref={controls} args={[camera, domElement]} enabled={props.enabled} movementSpeed={0.1} lookSpeed={0.02} />
     );
 }
 

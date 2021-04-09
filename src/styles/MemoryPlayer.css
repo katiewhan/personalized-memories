@@ -1,5 +1,5 @@
-.player-wrapper {
-    background-color: orange;
+.popup-wrapper {
+    background-color: rgba(0, 0, 0, 0.6);
     z-index: 1;
     position: absolute;
     width: 80vw;
@@ -9,4 +9,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 30px;
+    border: 2px solid white;
+    overflow: hidden;
 }

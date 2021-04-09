@@ -9,13 +9,13 @@ interface MemoryPlayerProps {
 
 function MemoryPlayer(props: MemoryPlayerProps) {
     return (
-        <div className='player-wrapper'>
+        <div className='popup-wrapper'>
             <ReactPlayer url={`https://personalized-memories.s3.amazonaws.com/videos/${props.name}.mp4`} 
                 playing={true}
                 onEnded={props.endMemory}
-                width='94%'
+                width='100%'
                 height='auto'
-                style={{'display': 'flex', 'maxHeight': '94%', 'maxWidth': '94%'}}
+                style={{'display': 'flex', 'objectFit': 'fill'}}
             />
         </div>
     );
