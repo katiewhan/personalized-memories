@@ -4,13 +4,14 @@ import '../styles/MemoryPlayer.css';
 
 interface MemoryPlayerProps {
     name: string;
+    url: string;
     endMemory: () => void;
 }
 
 function MemoryPlayer(props: MemoryPlayerProps) {
     return (
         <div className='popup-wrapper'>
-            <ReactPlayer url={`https://personalized-memories.s3.amazonaws.com/videos/${props.name}.mp4`} 
+            <ReactPlayer url={props.url} 
                 playing={true}
                 onError={props.endMemory}
                 onEnded={props.endMemory}

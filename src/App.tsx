@@ -2,14 +2,19 @@ import React, { Component } from 'react';
 import Scene from './components/Scene'
 import MemoryPlayer from './components/MemoryPlayer';
 
-import './App.css';
 import ShareActivity, { ShareActivityType } from './components/ShareActivity';
+import Landing from './components/Landing';
+
+import './App.css';
 
 interface StoryState {
     isPlayingMemory: boolean;
     currentMemoryName: string;
+    currentMemoryUrl: string;
     isSharingActivity: boolean;
     currentActivity: ShareActivityType;
+    isLandingPage: boolean;
+    isSceneLoaded: boolean;
 }
 
 class App extends Component<{}, StoryState> {
@@ -17,13 +22,31 @@ class App extends Component<{}, StoryState> {
 
     constructor (props: {}) {
         super(props);
-        this.state = { isPlayingMemory: false, currentMemoryName: '', isSharingActivity: false, currentActivity: ShareActivityType.Photo };
+        this.state = { 
+            isPlayingMemory: false, 
+            currentMemoryName: '', 
+            currentMemoryUrl: '', 
+            isSharingActivity: false, 
+            currentActivity: ShareActivityType.Photo, 
+            isLandingPage: true,
+            isSceneLoaded: false
+        };
     }
 
-    startMemory(name: string) {
+    startExperience() {
+        this.setState({ isLandingPage: false });
+        this.scene.current?.setSceneEnabled(true);
+    }
+
+    finishLoading() {
+        if (!this.state.isSceneLoaded) this.setState({ isSceneLoaded: true });
+    }
+
+    startMemory(name: string, url: string) {
         this.setState({
             isPlayingMemory: true,
-            currentMemoryName: name
+            currentMemoryName: name,
+            currentMemoryUrl: url
         });
     }
 
@@ -49,9 +72,10 @@ class App extends Component<{}, StoryState> {
     render() {
         return (
             <div className='wrapper'>
-                {this.state.isSharingActivity ? <ShareActivity type={this.state.currentActivity} close={this.endActivity.bind(this)}></ShareActivity> : null }
-                {this.state.isPlayingMemory ? <MemoryPlayer name={this.state.currentMemoryName} endMemory={this.endMemory.bind(this)}/> : null}
-                <Scene ref={this.scene} startMemory={this.startMemory.bind(this)}></Scene>
+                { this.state.isLandingPage ? <Landing loaded={this.state.isSceneLoaded} start={this.startExperience.bind(this)}></Landing>: null }
+                { this.state.isSharingActivity ? <ShareActivity type={this.state.currentActivity} close={this.endActivity.bind(this)}></ShareActivity> : null }
+                { this.state.isPlayingMemory ? <MemoryPlayer name={this.state.currentMemoryName} url={this.state.currentMemoryUrl} endMemory={this.endMemory.bind(this)}/> : null }
+                <Scene ref={this.scene} finishLoading={this.finishLoading.bind(this)} startMemory={this.startMemory.bind(this)}></Scene>
             </div>
         );
     }

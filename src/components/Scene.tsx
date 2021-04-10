@@ -31,17 +31,17 @@ function Wires() {
 interface SceneState {
     enabled: boolean;
     hovered: boolean;
-    loaded: boolean
 }
 
 interface SceneProps {
-    startMemory: (name: string) => void;
+    startMemory: (name: string, url: string) => void;
+    finishLoading: () => void;
 }
 
 class Scene extends Component<SceneProps, SceneState> {    
     constructor (props: SceneProps) {
         super(props);
-        this.state = { enabled: true, hovered: true, loaded: false };
+        this.state = { enabled: false, hovered: true };
     }
 
     setSceneEnabled(enabled: boolean) {
@@ -52,25 +52,21 @@ class Scene extends Component<SceneProps, SceneState> {
         this.setState({ hovered });
     }
     
-    playMemory(name: string) {
+    playMemory(name: string, url: string) {
         this.setSceneEnabled(false);
-        this.props.startMemory(name);
-    }
-
-    finishLoading() {
-        if (!this.state.loaded) this.setState({ loaded: true });
+        this.props.startMemory(name, url);
     }
 
     render() {
         return (
             <Canvas camera={{ position: [0, 0, 0] }}
-                onMouseEnter={this.setHovered.bind(this, true)}
-                onMouseLeave={this.setHovered.bind(this, false)}>
-                <CameraControls enabled={this.state.enabled && this.state.hovered && this.state.loaded} />
+                onMouseOver={this.setHovered.bind(this, true)}
+                onMouseOut={this.setHovered.bind(this, false)}>
+                <CameraControls enabled={this.state.enabled && this.state.hovered} />
                 <PostProcessing />
                 <pointLight position={[3, 3, 3]} args={['#F2DBAE']} />
                 <pointLight position={[-3, -3, -3]} args={['#7CA692']} />
-                <Suspense fallback={<Loading loadFinished={this.finishLoading.bind(this)}/>}>
+                <Suspense fallback={<Loading loadFinished={this.props.finishLoading.bind(this)}/>}>
                     <Wires />
                     <MemoryObject meshPath='assets/models/crane.glb' 
                         texturePath='assets/images/crane-texture.png' 

@@ -9,7 +9,7 @@ interface MemoryObjectProps {
     position: Vector3;
     scale: Vector3;
     enabled: boolean;
-    play: (name: string) => void;
+    play: (name: string, url: string) => void;
 }
 
 interface MemoryObjectState {
@@ -29,18 +29,25 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
     private gltf?: GLTF;
     private message?: Texture;
     private texture?: Texture;
+    private memoryCache: Map<string, string> = new Map();
 
     constructor(props: MemoryObjectProps) {
         super(props);
         this.state = { count: 0, hasUpdate: false };
     }
     
-    async componentDidMount() {
-        this.gltf = await new GLTFLoader().loadAsync(this.props.meshPath);
+    componentDidMount() {
+        new GLTFLoader().load(this.props.meshPath, (gltf) => this.gltf = gltf);
 
         const textureLoader = new TextureLoader();
-        this.message = await textureLoader.loadAsync('assets/images/update-message.png');
-        this.texture = await textureLoader.loadAsync(this.props.texturePath);
+        textureLoader.load('assets/images/update-message.png', (message) => this.message = message);
+        textureLoader.load(this.props.texturePath, (texture) => this.texture = texture);
+
+        this.preloadMemory(this.state.count + 1);
+    }
+
+    componentWillUnmount() {
+        this.memoryCache.clear();
     }
 
     setHovered(hovered: boolean) {
@@ -64,12 +71,27 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
         }
 
         if (newCount < 4) {
-            this.props.play(`${this.props.videoPath}-${newCount}`);
+            const name = `${this.props.videoPath}-${newCount}`;
+            const url = this.memoryCache.get(name) || `https://personalized-memories.s3.amazonaws.com/videos/${name}.mp4`;
+            this.props.play(name, url);
+
+            this.preloadMemory(newCount + 1);
         } else {
             // ending pop up
         }
 
         this.setState({ count: newCount });
+    }
+
+    preloadMemory(nextCount: number) {
+        const name = `${this.props.videoPath}-${nextCount}`;
+        const url = `https://personalized-memories.s3.amazonaws.com/videos/${name}.mp4`;
+        fetch(url).then((response) => {
+            return response.blob();
+        }).then((blob) => {
+            const blobUrl = window.URL.createObjectURL(blob);
+            this.memoryCache.set(name, blobUrl);
+        })
     }
 
     renderSprite() {
@@ -82,7 +104,7 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
 
     render() {
         return this.gltf ? (
-            <primitive object={this.gltf?.scene} 
+            <primitive object={this.gltf.scene} 
                 position={this.props.position} 
                 scale={this.props.scale} 
                 onClick={this.onClick.bind(this)}
