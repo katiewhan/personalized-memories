@@ -1,11 +1,22 @@
 import ReactPlayer from 'react-player';
 
-import '../styles/MemoryPlayer.css';
-
 interface MemoryPlayerProps {
     name: string;
     url: string;
     endMemory: () => void;
+}
+
+interface AdOverlay {
+    link: string;
+    imagePath?: string;
+    progressSeconds?: number;
+}
+
+const AdOverlaysMap: { [name: string]: AdOverlay } = {
+    'Origami-2': {
+        link: 'https://www.michaels.com/',
+        imagePath: 'assets/images/michaels.png'
+    }
 }
 
 function MemoryPlayer(props: MemoryPlayerProps) {

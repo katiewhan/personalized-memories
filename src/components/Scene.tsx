@@ -1,6 +1,6 @@
 import React, { Component, useEffect, Suspense } from 'react';
 import { Canvas, useLoader } from 'react-three-fiber';
-import { Vector3 } from 'three';
+import { Vector3, Object3D } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 import CameraControls from './CameraControls';
@@ -31,6 +31,7 @@ function Wires() {
 interface SceneState {
     enabled: boolean;
     hovered: boolean;
+    selectedObjects: Object3D[];
 }
 
 interface SceneProps {
@@ -41,7 +42,7 @@ interface SceneProps {
 class Scene extends Component<SceneProps, SceneState> {    
     constructor (props: SceneProps) {
         super(props);
-        this.state = { enabled: false, hovered: true };
+        this.state = { enabled: false, hovered: true, selectedObjects: [] };
     }
 
     setSceneEnabled(enabled: boolean) {
@@ -57,39 +58,54 @@ class Scene extends Component<SceneProps, SceneState> {
         this.props.startMemory(name, url);
     }
 
+    hoverMemory(object: Object3D, hovered: boolean) {
+        if (hovered) this.setState({ selectedObjects: [object] });
+        else this.setState({ selectedObjects: [] });
+    }
+
     render() {
         return (
             <Canvas camera={{ position: [0, 0, 0] }}
                 onMouseOver={this.setHovered.bind(this, true)}
                 onMouseOut={this.setHovered.bind(this, false)}>
                 <CameraControls enabled={this.state.enabled && this.state.hovered} />
-                <PostProcessing />
-                <pointLight position={[3, 3, 3]} args={['#F2DBAE']} />
-                <pointLight position={[-3, -3, -3]} args={['#7CA692']} />
+                <PostProcessing selectedObjects={this.state.selectedObjects} />
+                <pointLight position={[1, 1, 1]} args={['#F2DBAE']} />
+                {/* <pointLight position={[-3, -3, -3]} args={['#F2DBAE']} /> */}
                 <Suspense fallback={<Loading loadFinished={this.props.finishLoading.bind(this)}/>}>
                     <Wires />
                     <MemoryObject meshPath='assets/models/crane.glb' 
                         texturePath='assets/images/crane-texture.png' 
                         videoPath='Origami' 
                         play={this.playMemory.bind(this)}
+                        hover={this.hoverMemory.bind(this)}
                         enabled={this.state.enabled}
-                        position={new Vector3(0.8, -0.1, -0.5)} 
+                        position={new Vector3(0.5, -0.5, -0.5)} 
                         scale={new Vector3(0.1, 0.1, 0.1)} />
-                    {/* <MemoryObject meshPath='assets/models/cloud.glb' 
+                    <MemoryObject meshPath='assets/models/cloud.glb' 
+                        texturePath='assets/images/crane-texture.png' 
                         videoPath='RoadTrip' 
                         play={this.playMemory.bind(this)}
-                        position={new Vector3(-2, -0.4, 0.1)} 
+                        hover={this.hoverMemory.bind(this)}
+                        enabled={this.state.enabled}
+                        position={new Vector3(-0.5, -0.5, 0.5)} 
                         scale={new Vector3(0.1, 0.1, 0.1)} />
                     <MemoryObject meshPath='assets/models/tennis.glb' 
+                        texturePath='assets/images/crane-texture.png' 
                         videoPath='Tennis' 
                         play={this.playMemory.bind(this)}
-                        position={new Vector3(1, -1, -1)} 
+                        hover={this.hoverMemory.bind(this)}
+                        enabled={this.state.enabled}
+                        position={new Vector3(0.5, -0.5, 0.5)} 
                         scale={new Vector3(0.1, 0.1, 0.1)} />
-                    <MemoryObject meshPath='assets/models/beauty.glb' 
+                    <MemoryObject meshPath='assets/models/beauty.glb'
+                        texturePath='assets/images/crane-texture.png' 
                         videoPath='Dog' 
                         play={this.playMemory.bind(this)}
-                        position={new Vector3(0.5, 1.2, 2)} 
-                        scale={new Vector3(0.05, 0.05, 0.05)} /> */}
+                        hover={this.hoverMemory.bind(this)}
+                        enabled={this.state.enabled}
+                        position={new Vector3(0.5, -0.5, -0.5)} 
+                        scale={new Vector3(0.1, 0.1, 0.1)} />
                 </Suspense>
             </Canvas>
         );

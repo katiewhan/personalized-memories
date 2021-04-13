@@ -10,6 +10,7 @@ interface MemoryObjectProps {
     scale: Vector3;
     enabled: boolean;
     play: (name: string, url: string) => void;
+    hover: (object: Object3D, hovered: boolean) => void;
 }
 
 interface MemoryObjectState {
@@ -52,6 +53,7 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
 
     setHovered(hovered: boolean) {
         document.body.style.cursor = hovered ? 'pointer' : 'auto';
+        if (this.gltf) this.props.hover(this.gltf.scene, hovered);
     }
 
     onClick() {
@@ -97,7 +99,7 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
     renderSprite() {
         return (
             <sprite position={[0, 3, 0]} scale={[2.5, 2, 2]}>
-                <spriteMaterial attach="material" map={this.message} />
+                <spriteMaterial attach='material' map={this.message} />
             </sprite>
         );
     }

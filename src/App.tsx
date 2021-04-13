@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component, createRef } from 'react';
 import Scene from './components/Scene'
 import MemoryPlayer from './components/MemoryPlayer';
 
@@ -18,7 +18,7 @@ interface StoryState {
 }
 
 class App extends Component<{}, StoryState> {
-    private scene = React.createRef<Scene>();
+    private scene = createRef<Scene>();
 
     constructor (props: {}) {
         super(props);

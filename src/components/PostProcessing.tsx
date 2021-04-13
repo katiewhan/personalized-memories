@@ -4,9 +4,10 @@ import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 // import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
-// import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js';
+import { Vector2, Color, Object3D } from 'three';
 
-extend({ EffectComposer, BokehPass, RenderPass });
+extend({ EffectComposer, BokehPass, RenderPass, OutlinePass });
 
 declare global {
     namespace JSX {
@@ -15,15 +16,21 @@ declare global {
         'bokehPass': ReactThreeFiber.Object3DNode<BokehPass, typeof BokehPass>;
         'renderPass': ReactThreeFiber.Object3DNode<RenderPass, typeof RenderPass>;
         // 'shaderPass': ReactThreeFiber.Object3DNode<ShaderPass, typeof ShaderPass>;
-        // 'unrealBloomPass': ReactThreeFiber.Object3DNode<UnrealBloomPass, typeof UnrealBloomPass>;
+        'outlinePass': ReactThreeFiber.Object3DNode<OutlinePass, typeof OutlinePass>;
       }
     }
 }
 
-function PostProcessing() {
+interface PostProcessingProps {
+    selectedObjects: Object3D[];
+}
+
+function PostProcessing(props: PostProcessingProps) {
     const { camera, scene, size, gl } = useThree();
+    scene.background = new Color('#000000');
     const composer = useRef<EffectComposer>();
     const bokehParams = useMemo(() => ({ focus: 0.5, aperture: 0.005, maxblur: 0.002 }), []);
+    const resolution = useMemo(() => new Vector2(size.width, size.height), [size]);
 
     useEffect(() => {
         composer.current?.setSize(size.width, size.height);
@@ -37,6 +44,7 @@ function PostProcessing() {
             <renderPass attachArray='passes' scene={scene} camera={camera} />
             {/* <shaderPass attachArray='passes' args={[AdditiveBlendingShader]} uniforms-tAdd-value={occlusionRenderTarget.texture} /> */}
             <bokehPass attachArray='passes' args={[scene, camera, bokehParams]} />
+            <outlinePass attachArray='passes' args={[resolution, scene, camera, props.selectedObjects]} />
         </effectComposer>
     );
 }
