@@ -75,7 +75,7 @@ class Scene extends Component<SceneProps, SceneState> {
                 <Suspense fallback={<Loading loadFinished={this.props.finishLoading.bind(this)}/>}>
                     <Wires />
                     <MemoryObject meshPath='assets/models/crane.glb' 
-                        texturePath='assets/images/crane-texture.png' 
+                        texturePath='assets/images/crane-tex.png' 
                         videoPath='Origami' 
                         play={this.playMemory.bind(this)}
                         hover={this.hoverMemory.bind(this)}
@@ -83,7 +83,7 @@ class Scene extends Component<SceneProps, SceneState> {
                         position={new Vector3(0.5, -0.5, -0.5)} 
                         scale={new Vector3(0.1, 0.1, 0.1)} />
                     <MemoryObject meshPath='assets/models/cloud.glb' 
-                        texturePath='assets/images/crane-texture.png' 
+                        texturePath='assets/images/cloud-tex.png' 
                         videoPath='RoadTrip' 
                         play={this.playMemory.bind(this)}
                         hover={this.hoverMemory.bind(this)}
@@ -91,7 +91,7 @@ class Scene extends Component<SceneProps, SceneState> {
                         position={new Vector3(-0.5, -0.5, 0.5)} 
                         scale={new Vector3(0.1, 0.1, 0.1)} />
                     <MemoryObject meshPath='assets/models/tennis.glb' 
-                        texturePath='assets/images/crane-texture.png' 
+                        texturePath='assets/images/tennis-tex.png' 
                         videoPath='Tennis' 
                         play={this.playMemory.bind(this)}
                         hover={this.hoverMemory.bind(this)}
@@ -99,13 +99,13 @@ class Scene extends Component<SceneProps, SceneState> {
                         position={new Vector3(0.5, -0.5, 0.5)} 
                         scale={new Vector3(0.1, 0.1, 0.1)} />
                     <MemoryObject meshPath='assets/models/beauty.glb'
-                        texturePath='assets/images/crane-texture.png' 
+                        texturePath='assets/images/beauty-tex.png' 
                         videoPath='Dog' 
                         play={this.playMemory.bind(this)}
                         hover={this.hoverMemory.bind(this)}
                         enabled={this.state.enabled}
                         position={new Vector3(0.5, -0.5, -0.5)} 
-                        scale={new Vector3(0.1, 0.1, 0.1)} />
+                        scale={new Vector3(0.05, 0.05, 0.05)} />
                 </Suspense>
             </Canvas>
         );

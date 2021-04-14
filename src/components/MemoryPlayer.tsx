@@ -28,7 +28,7 @@ function MemoryPlayer(props: MemoryPlayerProps) {
                 onEnded={props.endMemory}
                 width='100%'
                 height='auto'
-                style={{'display': 'flex', 'objectFit': 'fill'}}
+                style={{'display': 'flex', 'minWidth': '100%', 'minHeight': '100%'}}
             />
         </div>
     );

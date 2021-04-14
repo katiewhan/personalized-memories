@@ -57,6 +57,10 @@ class App extends Component<{}, StoryState> {
         if (this.state.currentMemoryName === 'Origami-2') {
             this.startActivity(ShareActivityType.Photo);
         }
+
+        if (this.state.currentMemoryName === 'RoadTrip-2') {
+            this.startActivity(ShareActivityType.Location);
+        }
     }
 
     startActivity(type: ShareActivityType) {

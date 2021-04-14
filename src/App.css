@@ -7,7 +7,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: row;
+    flex-direction: column;
     background-color: rgba(0, 0, 0, 0.8);
     z-index: 1;
     position: absolute;
@@ -27,8 +27,25 @@
     -ms-animation: fadeIn 1s;
 }
 
+.title-wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 60px 30px;
+}
+
 .title {
-    align-self: flex-start;
+    font-family: "Geo", sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 48px;
+    line-height: 53px;
+}
+
+.sub-title {
+    display: flex;
+    padding: 30px;
 }
 
 .share-content-wrapper {
@@ -40,20 +57,23 @@
     height: 70%;
 }
 
-.share-content {
-    max-width: 100%;
+.share-content-3 {
+    display: flex;
+    padding: 10px;
+    max-width: 33%;
     max-height: 100%;
 }
 
 .share-content-footer {
     display: flex;
-    justify-content: flex-end;
+    align-self: flex-end;
     flex-direction: row;
+    padding: 30px;
 }
 
-.button, .outline, .share-content {
+.button, .outline {
     display: flex;
-    padding: 20px;
+    padding: 10px 30px;
 }
 
 .button:hover {
@@ -62,8 +82,13 @@
 }
 
 .outline {
-    border-radius: 30px;
+    border-radius: 20px;
     border: 2px solid white;
+}
+
+.button.outline {
+    color: #7BE4B2;
+    border-color: #7BE4B2;
 }
 
 @keyframes fadeIn {

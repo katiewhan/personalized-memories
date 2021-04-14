@@ -25,16 +25,16 @@ class ShareActivity extends Component<ShareActivityProps> {
             case ShareActivityType.Photo:
                 return (
                     <div className='share-content-wrapper'>
-                        <img className='share-content' src='assets/images/share-1.jpg' alt='ipad with apple pencil'></img>
-                        <img className='share-content' src='assets/images/share-2.jpg' alt='man drawing on ipad with apple pencil'></img>
-                        <img className='share-content' src='assets/images/share-3.jpg' alt='woman drawing on ipad with apple pencil'></img>
+                        <img className='share-content-3' src='assets/images/share-1.jpg' alt='ipad with apple pencil'></img>
+                        <img className='share-content-3' src='assets/images/share-2.jpg' alt='man drawing on ipad with apple pencil'></img>
+                        <img className='share-content-3' src='assets/images/share-3.jpg' alt='woman drawing on ipad with apple pencil'></img>
                     </div>
                 );
             case ShareActivityType.Location:
                 const url = LocationsList[Math.round(Math.random())]
                 return (
                     <div className='share-content-wrapper'>
-                        <iframe title='map' width='80%' height='80%' style={{'border': 0}} allowFullScreen={false} loading='lazy' src={url}></iframe>
+                        <iframe title='map' width='100%' height='100%' style={{'border': 0}} allowFullScreen={false} loading='lazy' src={url}></iframe>
                     </div>
                 );
         }
@@ -43,7 +43,7 @@ class ShareActivity extends Component<ShareActivityProps> {
     render() {
         return (
             <div className='popup-wrapper'>
-                <div>Share your recent {this.props.type} with your mom!</div>
+                <div className='sub-title'>Share your recent {this.props.type} with your mom!</div>
                 {this.renderContents()}
                 <div className='share-content-footer'>
                     <div className='button' onClick={this.onButtonClick.bind(this)}>No thanks</div>

@@ -34,7 +34,7 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
 
     constructor(props: MemoryObjectProps) {
         super(props);
-        this.state = { count: 0, hasUpdate: false };
+        this.state = { count: 1, hasUpdate: false };
     }
     
     componentDidMount() {

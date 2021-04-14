@@ -112,15 +112,22 @@ class Landing extends Component<LandingProps, LandingState> {
     }
 
     renderTitlePage() {
-        return (this.props.loaded ? 
-            <div className='button outline' onClick={this.onClickStart.bind(this)}>Start</div> : 
-            <div className='outline'>Loading...</div>);
+        return (
+            <>
+            <div className='title-wrapper'>
+                <div className='title'>Personalized Memories</div>
+                <div className='sub-title'>by Katie Han</div>
+            </div>
+            { this.props.loaded ? 
+                <div className='button outline' onClick={this.onClickStart.bind(this)}>Start</div> : 
+                <div className='outline'>Loading...</div> }
+            </>
+            );
     }
 
     render() {
         return (
             <div className='popup-wrapper'>
-                <div className='title'>Personalized Memories</div>
                 { !this.state.playing ? this.renderTitlePage() : this.renderAudioAnimation() }
             </div>
         );
