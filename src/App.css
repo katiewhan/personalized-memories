@@ -27,6 +27,28 @@
     -ms-animation: fadeIn 1s;
 }
 
+.video-wrapper {
+    display: flex;
+    min-width: 100%;
+    min-height: 100%;
+}
+
+.ad-wrapper {
+    border-color: #F29810;
+}
+
+.ad-overlay-jk {
+    position: absolute;
+    width: 25%;
+    height: auto;
+    z-index: 9;
+}
+
+.ad-jk {
+    max-width: 100%;
+    min-width: 100%;
+}
+
 .title-wrapper{
     display: flex;
     justify-content: center;

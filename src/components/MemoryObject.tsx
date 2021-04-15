@@ -31,17 +31,18 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
     private message?: Texture;
     private texture?: Texture;
     private memoryCache: Map<string, string> = new Map();
+    private updateTimeout?: number;
 
     constructor(props: MemoryObjectProps) {
         super(props);
-        this.state = { count: 1, hasUpdate: false };
+        this.state = { count: 0, hasUpdate: false };
     }
     
     componentDidMount() {
         new GLTFLoader().load(this.props.meshPath, (gltf) => this.gltf = gltf);
 
         const textureLoader = new TextureLoader();
-        textureLoader.load('assets/images/update-message.png', (message) => this.message = message);
+        textureLoader.load('assets/images/update-complete.png', (message) => this.message = message);
         textureLoader.load(this.props.texturePath, (texture) => this.texture = texture);
 
         this.preloadMemory(this.state.count + 1);
@@ -59,10 +60,17 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
     onClick() {
         if (!this.props.enabled) return;
 
-        if (this.state.hasUpdate) this.setState({ hasUpdate: false });
+        if (this.state.hasUpdate) {
+            this.setState({ hasUpdate: false });
+            window.clearTimeout(this.updateTimeout);
+            this.updateTimeout = undefined;
+        }
 
         const newCount = this.state.count + 1;
-        if (newCount < 3) setTimeout(() => this.setState({ hasUpdate: true }), 60000);
+        if (newCount < 3) {
+            this.updateTimeout = window.setTimeout(() => this.setState({ hasUpdate: true }), 60000);
+            this.preloadMemory(newCount + 1);
+        }
 
         if (newCount === 3) {
             this.gltf?.scene.traverse((object: Object3D) => {
@@ -76,8 +84,6 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
             const name = `${this.props.videoPath}-${newCount}`;
             const url = this.memoryCache.get(name) || `https://personalized-memories.s3.amazonaws.com/videos/${name}.mp4`;
             this.props.play(name, url);
-
-            this.preloadMemory(newCount + 1);
         } else {
             // ending pop up
         }

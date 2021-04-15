@@ -89,23 +89,23 @@ class Scene extends Component<SceneProps, SceneState> {
                         hover={this.hoverMemory.bind(this)}
                         enabled={this.state.enabled}
                         position={new Vector3(-0.5, -0.5, 0.5)} 
-                        scale={new Vector3(0.1, 0.1, 0.1)} />
+                        scale={new Vector3(0.05, 0.05, 0.05)} />
                     <MemoryObject meshPath='assets/models/tennis.glb' 
                         texturePath='assets/images/tennis-tex.png' 
-                        videoPath='Tennis' 
+                        videoPath='Dumpling' 
                         play={this.playMemory.bind(this)}
                         hover={this.hoverMemory.bind(this)}
                         enabled={this.state.enabled}
                         position={new Vector3(0.5, -0.5, 0.5)} 
                         scale={new Vector3(0.1, 0.1, 0.1)} />
-                    <MemoryObject meshPath='assets/models/beauty.glb'
+                    {/* <MemoryObject meshPath='assets/models/beauty.glb'
                         texturePath='assets/images/beauty-tex.png' 
                         videoPath='Dog' 
                         play={this.playMemory.bind(this)}
                         hover={this.hoverMemory.bind(this)}
                         enabled={this.state.enabled}
-                        position={new Vector3(0.5, -0.5, -0.5)} 
-                        scale={new Vector3(0.05, 0.05, 0.05)} />
+                        position={new Vector3(-0.5, -0.5, 0.5)} 
+                        scale={new Vector3(0.05, 0.05, 0.05)} /> */}
                 </Suspense>
             </Canvas>
         );
