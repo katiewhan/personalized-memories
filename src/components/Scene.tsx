@@ -1,9 +1,9 @@
-import React, { Component, useEffect, Suspense } from 'react';
+import { Component, Suspense, useEffect } from 'react';
 import { Canvas, useLoader } from 'react-three-fiber';
 import { Vector3, Object3D } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
-import CameraControls from './CameraControls';
+import { Camera, CameraControls } from './CameraControls';
 import MemoryObject from './MemoryObject';
 import PostProcessing from './PostProcessing';
 
@@ -65,13 +65,12 @@ class Scene extends Component<SceneProps, SceneState> {
 
     render() {
         return (
-            <Canvas camera={{ position: [0, 0, 0] }}
+            <Canvas
                 onMouseOver={this.setHovered.bind(this, true)}
                 onMouseOut={this.setHovered.bind(this, false)}>
+                <Camera />
                 <CameraControls enabled={this.state.enabled && this.state.hovered} />
                 <PostProcessing selectedObjects={this.state.selectedObjects} />
-                <pointLight position={[1, 1, 1]} args={['#F2DBAE']} />
-                {/* <pointLight position={[-3, -3, -3]} args={['#F2DBAE']} /> */}
                 <Suspense fallback={<Loading loadFinished={this.props.finishLoading.bind(this)}/>}>
                     <Wires />
                     <MemoryObject meshPath='assets/models/crane.glb' 
@@ -88,15 +87,15 @@ class Scene extends Component<SceneProps, SceneState> {
                         play={this.playMemory.bind(this)}
                         hover={this.hoverMemory.bind(this)}
                         enabled={this.state.enabled}
-                        position={new Vector3(-0.5, -0.5, 0.5)} 
-                        scale={new Vector3(0.05, 0.05, 0.05)} />
-                    <MemoryObject meshPath='assets/models/tennis.glb' 
-                        texturePath='assets/images/tennis-tex.png' 
+                        position={new Vector3(-0.5, 0.3, 0.4)} 
+                        scale={new Vector3(0.03, 0.03, 0.03)} />
+                    <MemoryObject meshPath='assets/models/pan.glb' 
+                        texturePath='assets/images/pan-tex.png' 
                         videoPath='Dumpling' 
                         play={this.playMemory.bind(this)}
                         hover={this.hoverMemory.bind(this)}
                         enabled={this.state.enabled}
-                        position={new Vector3(0.5, -0.5, 0.5)} 
+                        position={new Vector3(0.5, -0.1, 0.5)} 
                         scale={new Vector3(0.1, 0.1, 0.1)} />
                     {/* <MemoryObject meshPath='assets/models/beauty.glb'
                         texturePath='assets/images/beauty-tex.png' 

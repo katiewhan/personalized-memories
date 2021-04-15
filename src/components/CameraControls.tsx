@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { useFrame, useThree, extend, ReactThreeFiber } from 'react-three-fiber';
+import { PerspectiveCamera } from 'three';
 import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls';
 
 extend({ FirstPersonControls });
@@ -32,4 +33,16 @@ function CameraControls(props: CameraControlsProps) {
     );
 }
 
-export default CameraControls;
+function Camera() {
+  const ref = useRef<PerspectiveCamera>();
+  const { setDefaultCamera } = useThree();
+  useEffect(() => ref.current && setDefaultCamera(ref.current), []);
+  useFrame(() => ref.current?.updateMatrixWorld());
+  return (
+      <perspectiveCamera ref={ref} position={[0, 0, 0]}>
+          <pointLight position={[0, 0, 0]} args={['#F2DBAE']} />
+      </perspectiveCamera>
+  );
+}
+
+export {Camera, CameraControls};
