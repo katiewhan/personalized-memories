@@ -44,8 +44,8 @@ class Landing extends Component<LandingProps, LandingState> {
     }
 
     componentDidMount() {
-        this.audio.addEventListener('ended', () => this.props.close());
-        this.audio.addEventListener('error', () => this.props.close());
+        this.audio.addEventListener('ended', () => this.onEnded());
+        this.audio.addEventListener('error', () => this.onEnded());
 
         this.updateAnimation();
     }
@@ -55,13 +55,18 @@ class Landing extends Component<LandingProps, LandingState> {
     }
 
     componentWillUnmount() {
-        this.audio.removeEventListener('ended', () => this.props.close());
-        this.audio.removeEventListener('error', () => this.props.close());
+        this.audio.removeEventListener('ended', () => this.onEnded());
+        this.audio.removeEventListener('error', () => this.onEnded());
     }
 
     onClickStart() {
         this.setState({ playing: true })
         this.audio.play();
+    }
+
+    onEnded() {
+        this.setState({ playing: false });
+        this.props.close();
     }
 
     updateAnimation() {
@@ -76,14 +81,14 @@ class Landing extends Component<LandingProps, LandingState> {
             const height = this.canvasRef.current?.height || 0;
             this.canvasContext.clearRect(0, 0, width, height);
 
-            const sliceWidth = width * 0.5 / 10;
+            const sliceWidth = (width / 14) - 8;
             let x = 0;
 
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 14; i++) {
                 const v = this.dataArray[i] / 128.0;
                 const y = v * height * 0.5;
 
-                this.drawRoundRect(x, height - y, sliceWidth, y, 8);
+                this.drawRoundRect(x, height - y, sliceWidth, y, 10);
                 x += sliceWidth + 8;
             }
         } 
