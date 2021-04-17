@@ -9,7 +9,8 @@ interface MemoryObjectProps {
     position: Vector3;
     scale: Vector3;
     enabled: boolean;
-    play: (name: string, url: string) => void;
+    play: (name: string, url: string, increment: () => void) => void;
+    prompt: () => void;
     hover: (object: Object3D, hovered: boolean) => void;
 }
 
@@ -35,7 +36,7 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
 
     constructor(props: MemoryObjectProps) {
         super(props);
-        this.state = { count: 0, hasUpdate: false };
+        this.state = { count: 2, hasUpdate: false };
     }
     
     componentDidMount() {
@@ -43,7 +44,10 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
 
         const textureLoader = new TextureLoader();
         textureLoader.load('assets/images/update-complete.png', (message) => this.message = message);
-        textureLoader.load(this.props.texturePath, (texture) => this.texture = texture);
+        textureLoader.load(this.props.texturePath, (texture) => {
+            texture.flipY = true;
+            this.texture = texture;
+        });
 
         this.preloadMemory(this.state.count + 1);
     }
@@ -60,7 +64,21 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
     onClick() {
         if (!this.props.enabled) return;
 
-        if (this.state.hasUpdate) {
+        this.increaseCount();
+
+        if (this.state.count < 4) {
+            const name = `${this.props.videoPath}-${this.state.count}`;
+            const url = this.memoryCache.get(name) || `https://personalized-memories.s3.amazonaws.com/videos/${name}.mp4`;
+            this.props.play(name, url, this.increaseCount.bind(this));
+        } else {
+            this.props.prompt();
+        }
+    }
+
+    increaseCount() {
+        this.setState({ hasUpdate: false });
+
+        if (this.updateTimeout) {
             this.setState({ hasUpdate: false });
             window.clearTimeout(this.updateTimeout);
             this.updateTimeout = undefined;
@@ -78,14 +96,6 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
                     object.material.map = this.texture;
                 }
             });
-        }
-
-        if (newCount < 4) {
-            const name = `${this.props.videoPath}-${newCount}`;
-            const url = this.memoryCache.get(name) || `https://personalized-memories.s3.amazonaws.com/videos/${name}.mp4`;
-            this.props.play(name, url);
-        } else {
-            // ending pop up
         }
 
         this.setState({ count: newCount });

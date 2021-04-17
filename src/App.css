@@ -33,7 +33,7 @@
     min-height: 100%;
 }
 
-.ad-wrapper {
+.ad-wrapper-jk {
     border-color: #F29810;
 }
 
@@ -98,19 +98,27 @@
     padding: 10px 30px;
 }
 
-.button:hover {
-    opacity: 0.6;
-    cursor: pointer;
-}
-
 .outline {
     border-radius: 20px;
     border: 2px solid white;
 }
 
 .button.outline {
-    color: #7BE4B2;
-    border-color: #7BE4B2;
+    color:#F29810; /*#7BE4B2;*/
+    border-color: #F29810; /*#7BE4B2;*/
+}
+
+.x-button {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    right: 30px;
+    top: 30px;
+}
+
+.button:hover, .x-button:hover {
+    opacity: 0.6;
+    cursor: pointer;
 }
 
 @keyframes fadeIn {

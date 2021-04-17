@@ -4,6 +4,8 @@ import MemoryPlayer from './components/MemoryPlayer';
 
 import ShareActivity, { ShareActivityType } from './components/ShareActivity';
 import Landing from './components/Landing';
+import Ending from './components/Ending';
+import About from './components/About';
 
 import './App.css';
 
@@ -11,10 +13,13 @@ interface StoryState {
     isPlayingMemory: boolean;
     currentMemoryName: string;
     currentMemoryUrl: string;
+    currentMemoryIncrement: () => void;
     isSharingActivity: boolean;
     currentActivity: ShareActivityType;
     isLandingPage: boolean;
+    isAboutPage: boolean;
     isSceneLoaded: boolean;
+    isSubscriptionPage: boolean;
 }
 
 class App extends Component<{}, StoryState> {
@@ -26,10 +31,13 @@ class App extends Component<{}, StoryState> {
             isPlayingMemory: false, 
             currentMemoryName: '', 
             currentMemoryUrl: '', 
+            currentMemoryIncrement: () => {},
             isSharingActivity: false, 
             currentActivity: ShareActivityType.Photo, 
             isLandingPage: true,
-            isSceneLoaded: false
+            isAboutPage: false,
+            isSceneLoaded: false,
+            isSubscriptionPage: false
         };
     }
 
@@ -42,12 +50,14 @@ class App extends Component<{}, StoryState> {
         if (!this.state.isSceneLoaded) this.setState({ isSceneLoaded: true });
     }
 
-    startMemory(name: string, url: string) {
+    startMemory(name: string, url: string, increment: () => void) {
         this.setState({
             isPlayingMemory: true,
             currentMemoryName: name,
-            currentMemoryUrl: url
+            currentMemoryUrl: url,
+            currentMemoryIncrement: increment
         });
+        this.scene.current?.setSceneEnabled(false);
     }
 
     endMemory() {
@@ -68,18 +78,48 @@ class App extends Component<{}, StoryState> {
         this.scene.current?.setSceneEnabled(false);
     }
 
-    endActivity() {
+    endActivity(shared: boolean) {
+        if (!shared) {
+            this.state.currentMemoryIncrement();
+        }
+
         this.setState({ isSharingActivity: false });
+        this.scene.current?.setSceneEnabled(true);
+    }
+
+    startSubscriptionPage() {
+        this.setState({ isSubscriptionPage: true });
+        this.scene.current?.setSceneEnabled(false);
+    }
+
+    endSubscriptionPage(more: boolean) {
+        this.setState({ isSubscriptionPage: false });
+        this.scene.current?.setSceneEnabled(true);
+        
+        if (more) {
+            this.startAboutPage();
+        }
+    }
+
+    startAboutPage() {
+        this.setState({ isAboutPage: true });
+        this.scene.current?.setSceneEnabled(false);
+    }
+
+    endAboutPage() {
+        this.setState({ isAboutPage: false });
         this.scene.current?.setSceneEnabled(true);
     }
 
     render() {
         return (
             <div className='wrapper'>
-                { this.state.isLandingPage ? <Landing loaded={this.state.isSceneLoaded} start={this.startExperience.bind(this)}></Landing>: null }
+                { this.state.isLandingPage ? <Landing loaded={this.state.isSceneLoaded} close={this.startExperience.bind(this)}></Landing> : null }
+                { this.state.isAboutPage ? <About close={this.endAboutPage.bind(this)}></About> : null }
                 { this.state.isSharingActivity ? <ShareActivity type={this.state.currentActivity} close={this.endActivity.bind(this)}></ShareActivity> : null }
-                { this.state.isPlayingMemory ? <MemoryPlayer name={this.state.currentMemoryName} url={this.state.currentMemoryUrl} endMemory={this.endMemory.bind(this)}/> : null }
-                <Scene ref={this.scene} finishLoading={this.finishLoading.bind(this)} startMemory={this.startMemory.bind(this)}></Scene>
+                { this.state.isPlayingMemory ? <MemoryPlayer name={this.state.currentMemoryName} url={this.state.currentMemoryUrl} close={this.endMemory.bind(this)}/> : null }
+                { this.state.isSubscriptionPage ? <Ending close={this.endSubscriptionPage.bind(this)}></Ending> : null }
+                <Scene ref={this.scene} finishLoading={this.finishLoading.bind(this)} startMemory={this.startMemory.bind(this)} startSubscription={this.startSubscriptionPage.bind(this)}></Scene>
             </div>
         );
     }

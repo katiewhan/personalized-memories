@@ -39,12 +39,25 @@ const AdOverlaysMap: { [name: string]: AdOverlay } = {
         link: 'https://www.sixt.com/',
         timestamp: 19
     },
+    'Dumpling-2': {
+        link: 'https://www.masterclass.com/',
+        timestamp: 22,
+        imagePath: 'assets/images/masterclass.png',
+        style: {
+            right: '150px',
+            top: '100px'
+        }
+    },
+    'Dumpling-3': {
+        link: 'https://www.ubereats.com/',
+        timestamp: 17
+    },
 }
 
 interface MemoryPlayerProps {
     name: string;
     url: string;
-    endMemory: () => void;
+    close: () => void;
 }
 
 interface MemoryPlayerState {
@@ -62,14 +75,14 @@ class MemoryPlayer extends Component<MemoryPlayerProps, MemoryPlayerState> {
     }
 
     componentDidMount() {
-        this.videoRef.current?.addEventListener('ended', () => this.props.endMemory());
-        this.videoRef.current?.addEventListener('error', () => this.props.endMemory());
+        this.videoRef.current?.addEventListener('ended', () => this.props.close());
+        this.videoRef.current?.addEventListener('error', () => this.props.close());
         this.videoRef.current?.addEventListener('timeupdate', () => this.onTimeUpdate());
     }
 
     componentWillUnmount() {
-        this.videoRef.current?.removeEventListener('ended', () => this.props.endMemory());
-        this.videoRef.current?.removeEventListener('error', () => this.props.endMemory());
+        this.videoRef.current?.removeEventListener('ended', () => this.props.close());
+        this.videoRef.current?.removeEventListener('error', () => this.props.close());
         this.videoRef.current?.removeEventListener('timeupdate', () => this.onTimeUpdate());
     }
 
@@ -101,7 +114,7 @@ class MemoryPlayer extends Component<MemoryPlayerProps, MemoryPlayerState> {
 
     render() {
         return (
-            <div className={ this.isFullAdActive() ? 'popup-wrapper ad-wrapper' : 'popup-wrapper' }>
+            <div className={ this.isFullAdActive() ? 'popup-wrapper ad-wrapper-jk' : 'popup-wrapper' }>
                 { this.isPartialAdActive() ? 
                     <a className='ad-overlay-jk' 
                         style={this.adSettings?.style} 

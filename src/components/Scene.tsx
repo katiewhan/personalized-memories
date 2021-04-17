@@ -35,7 +35,8 @@ interface SceneState {
 }
 
 interface SceneProps {
-    startMemory: (name: string, url: string) => void;
+    startMemory: (name: string, url: string, increment: () => void) => void;
+    startSubscription: () => void;
     finishLoading: () => void;
 }
 
@@ -53,11 +54,6 @@ class Scene extends Component<SceneProps, SceneState> {
         this.setState({ hovered });
     }
     
-    playMemory(name: string, url: string) {
-        this.setSceneEnabled(false);
-        this.props.startMemory(name, url);
-    }
-
     hoverMemory(object: Object3D, hovered: boolean) {
         if (hovered) this.setState({ selectedObjects: [object] });
         else this.setState({ selectedObjects: [] });
@@ -76,7 +72,8 @@ class Scene extends Component<SceneProps, SceneState> {
                     <MemoryObject meshPath='assets/models/crane.glb' 
                         texturePath='assets/images/crane-tex.png' 
                         videoPath='Origami' 
-                        play={this.playMemory.bind(this)}
+                        play={this.props.startMemory.bind(this)}
+                        prompt={this.props.startSubscription.bind(this)}
                         hover={this.hoverMemory.bind(this)}
                         enabled={this.state.enabled}
                         position={new Vector3(0.5, -0.5, -0.5)} 
@@ -84,7 +81,8 @@ class Scene extends Component<SceneProps, SceneState> {
                     <MemoryObject meshPath='assets/models/cloud.glb' 
                         texturePath='assets/images/cloud-tex.png' 
                         videoPath='RoadTrip' 
-                        play={this.playMemory.bind(this)}
+                        play={this.props.startMemory.bind(this)}
+                        prompt={this.props.startSubscription.bind(this)}
                         hover={this.hoverMemory.bind(this)}
                         enabled={this.state.enabled}
                         position={new Vector3(-0.5, 0.3, 0.4)} 
@@ -92,7 +90,8 @@ class Scene extends Component<SceneProps, SceneState> {
                     <MemoryObject meshPath='assets/models/pan.glb' 
                         texturePath='assets/images/pan-tex.png' 
                         videoPath='Dumpling' 
-                        play={this.playMemory.bind(this)}
+                        play={this.props.startMemory.bind(this)}
+                        prompt={this.props.startSubscription.bind(this)}
                         hover={this.hoverMemory.bind(this)}
                         enabled={this.state.enabled}
                         position={new Vector3(0.5, -0.1, 0.5)} 
@@ -100,7 +99,8 @@ class Scene extends Component<SceneProps, SceneState> {
                     {/* <MemoryObject meshPath='assets/models/beauty.glb'
                         texturePath='assets/images/beauty-tex.png' 
                         videoPath='Dog' 
-                        play={this.playMemory.bind(this)}
+                        play={this.props.startMemory.bind(this)}
+                        prompt={this.props.startSubscription.bind(this)}
                         hover={this.hoverMemory.bind(this)}
                         enabled={this.state.enabled}
                         position={new Vector3(-0.5, -0.5, 0.5)} 

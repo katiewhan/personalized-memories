@@ -7,7 +7,7 @@ export enum ShareActivityType {
 
 interface ShareActivityProps {
     type: ShareActivityType;
-    close: () => void;
+    close: (shared: boolean) => void;
 }
 
 const LocationsList = [
@@ -16,8 +16,12 @@ const LocationsList = [
 ]
 
 class ShareActivity extends Component<ShareActivityProps> {
-    onButtonClick() {
-        this.props.close();
+    onShare() {
+        this.props.close(true);
+    }
+
+    onNoThanks() {
+        this.props.close(false);
     }
 
     renderContents() {
@@ -46,8 +50,8 @@ class ShareActivity extends Component<ShareActivityProps> {
                 <div className='sub-title'>Share your recent {this.props.type} with your mom!</div>
                 {this.renderContents()}
                 <div className='share-content-footer'>
-                    <div className='button' onClick={this.onButtonClick.bind(this)}>No thanks</div>
-                    <div className='button outline' onClick={this.onButtonClick.bind(this)}>Share</div>
+                    <div className='button' onClick={this.onNoThanks.bind(this)}>No thanks</div>
+                    <div className='button outline' onClick={this.onShare.bind(this)}>Share</div>
                 </div>
             </div>
         );

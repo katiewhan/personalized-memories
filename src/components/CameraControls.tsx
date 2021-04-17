@@ -36,7 +36,7 @@ function CameraControls(props: CameraControlsProps) {
 function Camera() {
   const ref = useRef<PerspectiveCamera>();
   const { setDefaultCamera } = useThree();
-  useEffect(() => ref.current && setDefaultCamera(ref.current), []);
+  useEffect(() => ref.current && setDefaultCamera(ref.current), [setDefaultCamera]);
   useFrame(() => ref.current?.updateMatrixWorld());
   return (
       <perspectiveCamera ref={ref} position={[0, 0, 0]}>

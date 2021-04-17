@@ -8,7 +8,7 @@ declare global {
 
 interface LandingProps {
     loaded: boolean;
-    start: () => void;
+    close: () => void;
 }
 
 interface LandingState {
@@ -19,7 +19,6 @@ class Landing extends Component<LandingProps, LandingState> {
     private audio: HTMLAudioElement;
     private audioContext: AudioContext;
     private audioAnalyser: AnalyserNode;
-    private bufferLength: number;
     private dataArray: Uint8Array;
     private canvasRef = createRef<HTMLCanvasElement>();
     private canvasContext?: CanvasRenderingContext2D;
@@ -40,13 +39,13 @@ class Landing extends Component<LandingProps, LandingState> {
         this.audioAnalyser.connect(this.audioContext.destination);
         this.audioContext.resume();
 
-        this.bufferLength = this.audioAnalyser.frequencyBinCount;
-        this.dataArray = new Uint8Array(this.bufferLength);
+        const bufferLength = this.audioAnalyser.frequencyBinCount;
+        this.dataArray = new Uint8Array(bufferLength);
     }
 
     componentDidMount() {
-        this.audio.addEventListener('ended', () => this.props.start());
-        this.audio.addEventListener('error', () => this.props.start());
+        this.audio.addEventListener('ended', () => this.props.close());
+        this.audio.addEventListener('error', () => this.props.close());
 
         this.updateAnimation();
     }
@@ -56,8 +55,8 @@ class Landing extends Component<LandingProps, LandingState> {
     }
 
     componentWillUnmount() {
-        this.audio.removeEventListener('ended', () => this.props.start());
-        this.audio.removeEventListener('error', () => this.props.start());
+        this.audio.removeEventListener('ended', () => this.props.close());
+        this.audio.removeEventListener('error', () => this.props.close());
     }
 
     onClickStart() {
@@ -77,10 +76,10 @@ class Landing extends Component<LandingProps, LandingState> {
             const height = this.canvasRef.current?.height || 0;
             this.canvasContext.clearRect(0, 0, width, height);
 
-            const sliceWidth = width * 0.5 / this.bufferLength;
+            const sliceWidth = width * 0.5 / 10;
             let x = 0;
 
-            for (let i = 0; i < this.bufferLength; i++) {
+            for (let i = 0; i < 10; i++) {
                 const v = this.dataArray[i] / 128.0;
                 const y = v * height * 0.5;
 
