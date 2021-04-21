@@ -8,6 +8,7 @@ import Ending from './components/Ending';
 import About from './components/About';
 
 import './App.css';
+import Footer from './components/Footer';
 
 interface StoryState {
     isPlayingMemory: boolean;
@@ -121,6 +122,7 @@ class App extends Component<{}, StoryState> {
                 { this.state.isSharingActivity ? <ShareActivity type={this.state.currentActivity} close={this.endActivity.bind(this)}></ShareActivity> : null }
                 { this.state.isPlayingMemory ? <MemoryPlayer name={this.state.currentMemoryName} url={this.state.currentMemoryUrl} close={this.endMemory.bind(this)}/> : null }
                 { this.state.isSubscriptionPage ? <Ending close={this.endSubscriptionPage.bind(this)}></Ending> : null }
+                <Footer showTitle={!this.state.isLandingPage} allowAbout={true} triggerAbout={this.startAboutPage.bind(this)}></Footer>
                 <Scene ref={this.scene} finishLoading={this.finishLoading.bind(this)} startMemory={this.startMemory.bind(this)} startSubscription={this.startSubscriptionPage.bind(this)}></Scene>
             </div>
         );

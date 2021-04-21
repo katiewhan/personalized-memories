@@ -46,7 +46,7 @@ class ShareActivity extends Component<ShareActivityProps> {
 
     render() {
         return (
-            <div className='popup-wrapper'>
+            <div className='popup-wrapper noselect'>
                 <div className='sub-title'>Share your recent {this.props.type} with your mom!</div>
                 {this.renderContents()}
                 <div className='share-content-footer'>

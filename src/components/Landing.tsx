@@ -136,7 +136,7 @@ class Landing extends Component<LandingProps, LandingState> {
 
     render() {
         return (
-            <div className='popup-wrapper'>
+            <div className='popup-wrapper noselect'>
                 { !this.state.playing ? this.renderTitlePage() : this.renderAudioAnimation() }
             </div>
         );
