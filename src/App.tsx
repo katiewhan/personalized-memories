@@ -64,6 +64,8 @@ class App extends Component<{}, StoryState> {
         this.setState({ isPlayingMemory: false });
         this.scene.current?.setSceneEnabled(true);
 
+        this.state.currentMemoryIncrement();
+
         if (this.state.currentMemoryName === 'Origami-2') {
             this.startActivity(ShareActivityType.Photo);
         }

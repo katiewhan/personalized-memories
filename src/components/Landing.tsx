@@ -37,7 +37,6 @@ class Landing extends Component<LandingProps, LandingState> {
         const track = this.audioContext.createMediaElementSource(this.audio);
         track.connect(this.audioAnalyser);
         this.audioAnalyser.connect(this.audioContext.destination);
-        this.audioContext.resume();
 
         const bufferLength = this.audioAnalyser.frequencyBinCount;
         this.dataArray = new Uint8Array(bufferLength);
@@ -61,6 +60,7 @@ class Landing extends Component<LandingProps, LandingState> {
 
     onClickStart() {
         this.setState({ playing: true })
+        this.audioContext.resume();
         this.audio.play();
     }
 
@@ -112,7 +112,12 @@ class Landing extends Component<LandingProps, LandingState> {
     }
 
     renderAudioAnimation() {
-        return <canvas ref={this.canvasRef} width={window.innerWidth / 4} height={window.innerHeight / 6}></canvas>
+        return (
+            <>
+            <canvas ref={this.canvasRef} width={window.innerWidth / 4} height={window.innerHeight / 6}></canvas>
+            <div className='powered-by'>Powered by Centillion.</div> 
+            </>
+        );
     }
 
     renderTitlePage() {

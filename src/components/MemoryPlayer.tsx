@@ -40,15 +40,6 @@ const AdOverlaysMap: { [name: string]: AdOverlay } = {
         timestamp: 19
     },
     'Dumpling-2': {
-        link: 'https://www.masterclass.com/',
-        timestamp: 22,
-        imagePath: 'assets/images/masterclass.png',
-        style: {
-            right: '150px',
-            top: '100px'
-        }
-    },
-    'Dumpling-3': {
         link: 'https://www.ubereats.com/',
         timestamp: 17
     },

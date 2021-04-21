@@ -53,6 +53,7 @@ class ShareActivity extends Component<ShareActivityProps> {
                     <div className='button' onClick={this.onNoThanks.bind(this)}>No thanks</div>
                     <div className='button outline' onClick={this.onShare.bind(this)}>Share</div>
                 </div>
+                <div className='powered-by'>Powered by Centillion.</div> 
             </div>
         );
     }

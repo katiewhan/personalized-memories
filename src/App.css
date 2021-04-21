@@ -49,7 +49,7 @@
     min-width: 100%;
 }
 
-.title-wrapper{
+.title-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -68,6 +68,13 @@
 .sub-title {
     display: flex;
     padding: 30px;
+}
+
+.powered-by {
+    position: absolute;
+    left: 30px;
+    bottom: 20px;
+    font-size: 12px;
 }
 
 .share-content-wrapper {

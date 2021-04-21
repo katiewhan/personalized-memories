@@ -1,9 +1,8 @@
 import { Component, Suspense, useEffect } from 'react';
-import { Canvas, useLoader } from 'react-three-fiber';
+import { Canvas, useLoader, useThree } from 'react-three-fiber';
 import { Vector3, Object3D } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
-import { Camera, CameraControls } from './CameraControls';
 import MemoryObject from './MemoryObject';
 import PostProcessing from './PostProcessing';
 
@@ -21,6 +20,12 @@ function Loading(props: LoadingProps) {
     return null;
 }
 
+function Camera() {
+    const { camera } = useThree();
+    camera.position.z = 0;
+    return null;
+}  
+
 function Wires() {
     const gltf = useLoader(GLTFLoader, 'assets/models/wires.glb');
     return (
@@ -30,7 +35,6 @@ function Wires() {
 
 interface SceneState {
     enabled: boolean;
-    hovered: boolean;
     selectedObjects: Object3D[];
 }
 
@@ -43,58 +47,58 @@ interface SceneProps {
 class Scene extends Component<SceneProps, SceneState> {    
     constructor (props: SceneProps) {
         super(props);
-        this.state = { enabled: false, hovered: true, selectedObjects: [] };
+        this.state = { enabled: false, selectedObjects: [] };
     }
 
     setSceneEnabled(enabled: boolean) {
         this.setState({ enabled });
     }
-
-    setHovered(hovered: boolean) {
-        this.setState({ hovered });
-    }
     
     hoverMemory(object: Object3D, hovered: boolean) {
-        if (hovered) this.setState({ selectedObjects: [object] });
+        const hoverActive = hovered && this.state.enabled;
+        document.body.style.cursor = hoverActive ? 'pointer' : 'auto';
+
+        if (hoverActive) this.setState({ selectedObjects: [object] });
         else this.setState({ selectedObjects: [] });
     }
 
     render() {
         return (
-            <Canvas
-                onMouseOver={this.setHovered.bind(this, true)}
-                onMouseOut={this.setHovered.bind(this, false)}>
+            <Canvas>
                 <Camera />
-                <CameraControls enabled={this.state.enabled && this.state.hovered} />
+                <pointLight position={[0, 0.5, -0.5]} args={['#F2DBAE']} />
                 <PostProcessing selectedObjects={this.state.selectedObjects} />
                 <Suspense fallback={<Loading loadFinished={this.props.finishLoading.bind(this)}/>}>
                     <Wires />
                     <MemoryObject meshPath='assets/models/crane.glb' 
-                        texturePath='assets/images/crane-tex.png' 
+                        texturePath='assets/images/crane' 
                         videoPath='Origami' 
                         play={this.props.startMemory.bind(this)}
                         prompt={this.props.startSubscription.bind(this)}
                         hover={this.hoverMemory.bind(this)}
                         enabled={this.state.enabled}
-                        position={new Vector3(0.5, -0.5, -0.5)} 
+                        totalNum={4}
+                        position={new Vector3(0.7, -0.4, -1)} 
                         scale={new Vector3(0.1, 0.1, 0.1)} />
                     <MemoryObject meshPath='assets/models/cloud.glb' 
-                        texturePath='assets/images/cloud-tex.png' 
+                        texturePath='assets/images/cloud' 
                         videoPath='RoadTrip' 
                         play={this.props.startMemory.bind(this)}
                         prompt={this.props.startSubscription.bind(this)}
                         hover={this.hoverMemory.bind(this)}
                         enabled={this.state.enabled}
-                        position={new Vector3(-0.5, 0.3, 0.4)} 
-                        scale={new Vector3(0.03, 0.03, 0.03)} />
+                        totalNum={4}
+                        position={new Vector3(-0.3, 0.35, -1.1)} 
+                        scale={new Vector3(0.05, 0.05, 0.05)} />
                     <MemoryObject meshPath='assets/models/pan.glb' 
-                        texturePath='assets/images/pan-tex.png' 
+                        texturePath='assets/images/pan' 
                         videoPath='Dumpling' 
                         play={this.props.startMemory.bind(this)}
                         prompt={this.props.startSubscription.bind(this)}
                         hover={this.hoverMemory.bind(this)}
                         enabled={this.state.enabled}
-                        position={new Vector3(0.5, -0.1, 0.5)} 
+                        totalNum={3}
+                        position={new Vector3(-0.65, -0.2, -0.9)}       
                         scale={new Vector3(0.1, 0.1, 0.1)} />
                     {/* <MemoryObject meshPath='assets/models/beauty.glb'
                         texturePath='assets/images/beauty-tex.png' 

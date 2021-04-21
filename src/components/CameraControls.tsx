@@ -1,6 +1,5 @@
 import { useRef, useEffect } from 'react';
 import { useFrame, useThree, extend, ReactThreeFiber } from 'react-three-fiber';
-import { PerspectiveCamera } from 'three';
 import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls';
 
 extend({ FirstPersonControls });
@@ -34,14 +33,28 @@ function CameraControls(props: CameraControlsProps) {
 }
 
 function Camera() {
-  const ref = useRef<PerspectiveCamera>();
-  const { setDefaultCamera } = useThree();
-  useEffect(() => ref.current && setDefaultCamera(ref.current), [setDefaultCamera]);
-  useFrame(() => ref.current?.updateMatrixWorld());
-  return (
-      <perspectiveCamera ref={ref} position={[0, 0, 0]}>
-          <pointLight position={[0, 0, 0]} args={['#F2DBAE']} />
-      </perspectiveCamera>
+  const {
+    camera,
+    size,
+  } = useThree();
+  camera.position.z = 0;
+
+  // useEffect(() => {
+  //     camera.aspect = size.width / size.height;
+  // }, [size]);
+
+  // const ref = useRef<PerspectiveCamera>();
+  // const { size, setDefaultCamera } = useThree();
+  // useEffect(() => {
+  //   if (ref.current) {
+  //     setDefaultCamera(ref.current);
+  //     ref.current.aspect = size.width / size.height;
+  //   }
+  // }, [size, setDefaultCamera]);
+  // useFrame(() => ref.current?.updateMatrixWorld());
+  return ( null
+      // <perspectiveCamera ref={ref} position={[0, 0, 0]} args={[80, size.width / size.height, 0.5, 2000]}>
+      // </perspectiveCamera>
   );
 }
 
