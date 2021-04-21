@@ -16,6 +16,7 @@ interface PrimitiveObjectProps {
     texture: string;
     position: Vector3;
     scale: Vector3;
+    spinning: boolean;
     onClick: () => void;
     hover: (object: Object3D, hovered: boolean) => void;
 }
@@ -29,7 +30,10 @@ function PrimitiveObject(props: PrimitiveObjectProps) {
             object.material.map = tex;
         }
     });
-    useFrame(() => gltf.scene.rotateY(0.005));
+
+    useFrame(() => {
+        if (props.spinning) gltf.scene.rotateY(0.005);
+    });
 
     const setHovered = (hovered: boolean) => {
         props.hover(gltf.scene, hovered);
@@ -54,7 +58,7 @@ interface MemoryObjectProps {
     scale: Vector3;
     enabled: boolean;
     totalNum: number;
-    play: (name: string, url: string, increment: () => void) => void;
+    play: (name: string, url: string, increment: () => boolean) => void;
     prompt: () => void;
     hover: (object: Object3D, hovered: boolean) => void;
 }
@@ -62,6 +66,7 @@ interface MemoryObjectProps {
 interface MemoryObjectState {
     count: number;
     hasUpdate: boolean;
+    isSpinning: boolean;
     currentTexturePath: string;
 }
 
@@ -72,7 +77,7 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
 
     constructor(props: MemoryObjectProps) {
         super(props);
-        this.state = { count: 1, hasUpdate: false, currentTexturePath: this.props.texturePath + '.png' };
+        this.state = { count: 1, hasUpdate: false, isSpinning: true, currentTexturePath: this.props.texturePath + '.png' };
     }
     
     componentDidMount() {
@@ -89,6 +94,11 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
     onClick() {
         if (!this.props.enabled) return;
 
+        if (this.updateTimeout) {
+            window.clearTimeout(this.updateTimeout);
+            this.updateTimeout = undefined;
+        }
+
         this.setState({ hasUpdate: false });
 
         if (this.state.count < this.props.totalNum) {
@@ -103,16 +113,23 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
     }
 
     increaseCount() {
+        let promptSubscription = false;
+
         const newCount = this.state.count + 1;
         if (newCount < this.props.totalNum) {
-            this.setState({ hasUpdate: true });
+            this.updateTimeout = window.setTimeout(() => {
+                this.setState({ hasUpdate: true });
+                this.updateTimeout = undefined;
+            }, 2000);
         }
 
         if (newCount === this.props.totalNum ) {
-            this.setState({ currentTexturePath: this.props.texturePath + '-tex.png' }) 
+            this.setState({ isSpinning: false, currentTexturePath: this.props.texturePath + '-tex.png' });
+            promptSubscription = true;
         }
 
         this.setState({ count: newCount });
+        return promptSubscription;
     }
 
     preloadMemory(nextCount: number) {
@@ -142,6 +159,7 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
                 texture={this.state.currentTexturePath}
                 position={this.props.position} 
                 scale={this.props.scale}
+                spinning={this.state.isSpinning}
                 onClick={this.onClick.bind(this)}
                 hover={this.props.hover} />
             {this.state.hasUpdate ? this.renderSprite() : null}

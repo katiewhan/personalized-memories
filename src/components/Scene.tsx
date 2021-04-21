@@ -39,7 +39,7 @@ interface SceneState {
 }
 
 interface SceneProps {
-    startMemory: (name: string, url: string, increment: () => void) => void;
+    startMemory: (name: string, url: string, increment: () => boolean) => void;
     startSubscription: () => void;
     finishLoading: () => void;
 }

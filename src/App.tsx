@@ -14,7 +14,7 @@ interface StoryState {
     isPlayingMemory: boolean;
     currentMemoryName: string;
     currentMemoryUrl: string;
-    currentMemoryIncrement: () => void;
+    currentMemoryIncrement: () => boolean;
     isSharingActivity: boolean;
     currentActivity: ShareActivityType;
     isLandingPage: boolean;
@@ -32,7 +32,7 @@ class App extends Component<{}, StoryState> {
             isPlayingMemory: false, 
             currentMemoryName: '', 
             currentMemoryUrl: '', 
-            currentMemoryIncrement: () => {},
+            currentMemoryIncrement: () => false,
             isSharingActivity: false, 
             currentActivity: ShareActivityType.Photo, 
             isLandingPage: true,
@@ -51,7 +51,7 @@ class App extends Component<{}, StoryState> {
         if (!this.state.isSceneLoaded) this.setState({ isSceneLoaded: true });
     }
 
-    startMemory(name: string, url: string, increment: () => void) {
+    startMemory(name: string, url: string, increment: () => boolean) {
         this.setState({
             isPlayingMemory: true,
             currentMemoryName: name,
@@ -65,13 +65,13 @@ class App extends Component<{}, StoryState> {
         this.setState({ isPlayingMemory: false });
         this.scene.current?.setSceneEnabled(true);
 
-        this.state.currentMemoryIncrement();
+        const promptSubscription = this.state.currentMemoryIncrement();
 
-        if (this.state.currentMemoryName === 'Origami-2') {
+        if (promptSubscription) {
+            this.startSubscriptionPage();
+        } else if (this.state.currentMemoryName === 'Origami-2') {
             this.startActivity(ShareActivityType.Photo);
-        }
-
-        if (this.state.currentMemoryName === 'RoadTrip-2') {
+        } else if (this.state.currentMemoryName === 'RoadTrip-2') {
             this.startActivity(ShareActivityType.Location);
         }
     }
@@ -82,12 +82,15 @@ class App extends Component<{}, StoryState> {
     }
 
     endActivity(shared: boolean) {
-        if (!shared) {
-            this.state.currentMemoryIncrement();
-        }
-
         this.setState({ isSharingActivity: false });
         this.scene.current?.setSceneEnabled(true);
+
+        if (!shared) {
+            const promptSubscription = this.state.currentMemoryIncrement();
+            if (promptSubscription) {
+                this.startSubscriptionPage();
+            }
+        }
     }
 
     startSubscriptionPage() {

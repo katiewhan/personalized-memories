@@ -8,7 +8,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: black;
     z-index: 1;
     position: absolute;
     width: 80vw;
@@ -33,7 +33,7 @@
 }
 
 .ad-wrapper-jk {
-    border-color: #F29810;
+    border: 4px solid #F29810;
 }
 
 .ad-overlay-jk {
@@ -122,16 +122,21 @@
 
 .x-button {
     position: absolute;
-    width: 60px;
-    height: 60px;
-    right: 30px;
+    width: 50px;
+    height: 50px;
+    right: 20px;
     top: 30px;
 }
 
 .icon-button {
-    width: 50px;
-    height: 50px;
-    padding: 10px;
+    width: 40px;
+    height: 40px;
+    padding: 10px 5px;
+}
+
+.icon-button img, .x-button img {
+    width: 40px;
+    height: 40px;
 }
 
 .button:hover, .x-button:hover, .icon-button:hover {
