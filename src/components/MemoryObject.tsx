@@ -124,7 +124,7 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
         }
 
         if (newCount === this.props.totalNum ) {
-            this.setState({ isSpinning: false, currentTexturePath: this.props.texturePath + '-tex.png' });
+            this.setState({ hasUpdate: false, isSpinning: false, currentTexturePath: this.props.texturePath + '-tex.png' });
             promptSubscription = true;
         }
 

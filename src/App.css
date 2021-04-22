@@ -72,6 +72,12 @@
 
 .sub-title {
     padding: 30px;
+    text-align: center;
+}
+
+.about {
+    padding: 30px;
+    overflow: auto;
 }
 
 .powered-by {
@@ -184,6 +190,10 @@
           -ms-user-select: none; /* Internet Explorer/Edge */
               user-select: none; /* Non-prefixed version, currently
                                     supported by Chrome, Edge, Opera and Firefox */
+}
+
+.priority {
+    z-index: 9999;
 }
 
 @keyframes fadeIn {

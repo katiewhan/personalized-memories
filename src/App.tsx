@@ -65,14 +65,15 @@ class App extends Component<{}, StoryState> {
         this.setState({ isPlayingMemory: false });
         this.scene.current?.setSceneEnabled(true);
 
-        const promptSubscription = this.state.currentMemoryIncrement();
-
-        if (promptSubscription) {
-            this.startSubscriptionPage();
-        } else if (this.state.currentMemoryName === 'Origami-2') {
+        if (this.state.currentMemoryName === 'Origami-2') {
             this.startActivity(ShareActivityType.Photo);
         } else if (this.state.currentMemoryName === 'RoadTrip-2') {
             this.startActivity(ShareActivityType.Location);
+        } else {
+            const promptSubscription = this.state.currentMemoryIncrement();
+            if (promptSubscription) {
+                this.startSubscriptionPage();
+            }
         }
     }
 
@@ -85,11 +86,13 @@ class App extends Component<{}, StoryState> {
         this.setState({ isSharingActivity: false });
         this.scene.current?.setSceneEnabled(true);
 
+        let promptSubscription = this.state.currentMemoryIncrement();
         if (!shared) {
-            const promptSubscription = this.state.currentMemoryIncrement();
-            if (promptSubscription) {
-                this.startSubscriptionPage();
-            }
+            promptSubscription = this.state.currentMemoryIncrement() || promptSubscription;
+        }
+
+        if (promptSubscription) {
+            this.startSubscriptionPage();
         }
     }
 
@@ -124,7 +127,7 @@ class App extends Component<{}, StoryState> {
                 { this.state.isAboutPage ? <About close={this.endAboutPage.bind(this)}></About> : null }
                 { this.state.isSharingActivity ? <ShareActivity type={this.state.currentActivity} close={this.endActivity.bind(this)}></ShareActivity> : null }
                 { this.state.isPlayingMemory ? <MemoryPlayer name={this.state.currentMemoryName} url={this.state.currentMemoryUrl} close={this.endMemory.bind(this)}/> : null }
-                { this.state.isSubscriptionPage ? <Ending close={this.endSubscriptionPage.bind(this)}></Ending> : null }
+                { this.state.isSubscriptionPage ? <Ending name={this.state.currentMemoryName} close={this.endSubscriptionPage.bind(this)}></Ending> : null }
                 <Footer showTitle={!this.state.isLandingPage} allowAbout={true} triggerAbout={this.startAboutPage.bind(this)}></Footer>
                 <Scene ref={this.scene} finishLoading={this.finishLoading.bind(this)} startMemory={this.startMemory.bind(this)} startSubscription={this.startSubscriptionPage.bind(this)}></Scene>
             </div>
