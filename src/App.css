@@ -71,7 +71,6 @@
 }
 
 .sub-title {
-    display: flex;
     padding: 30px;
 }
 
@@ -80,6 +79,13 @@
     left: 30px;
     bottom: 20px;
     font-size: 12px;
+}
+
+.centillion {
+    display: inline-block;
+    font-family: "Megrim", sans-serif;
+    font-weight: bold;
+    padding-left: 5px;
 }
 
 .share-content-wrapper {
@@ -115,7 +121,7 @@
     border: 2px solid white;
 }
 
-.button.outline {
+.button.outline, .accent {
     color:#F29810; /*#7BE4B2;*/
     border-color: #F29810; /*#7BE4B2;*/
 }

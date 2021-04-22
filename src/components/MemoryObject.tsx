@@ -146,7 +146,7 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
     renderSprite() {
         const spritePos = new Vector3(this.props.position.x, this.props.position.y + 0.3, this.props.position.z);
         return (
-            <sprite position={spritePos} scale={[0.4, 0.24, 1]} renderOrder={9}>
+            <sprite position={spritePos} scale={[0.41, 0.24, 1]} renderOrder={9}>
                 <spriteMaterial attach='material' map={this.message} depthTest={false}/>
             </sprite>
         );

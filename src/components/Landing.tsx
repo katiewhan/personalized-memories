@@ -115,7 +115,7 @@ class Landing extends Component<LandingProps, LandingState> {
         return (
             <>
             <canvas ref={this.canvasRef} width={window.innerWidth / 4} height={window.innerHeight / 6}></canvas>
-            <div className='powered-by'>Powered by Centillion.</div> 
+            <div className='powered-by'>Powered by <div className='centillion'>Centillion</div>.</div> 
             </>
         );
     }
@@ -125,11 +125,13 @@ class Landing extends Component<LandingProps, LandingState> {
             <>
             <div className='title-wrapper'>
                 <div className='title'>Personalized Memories</div>
-                <div className='sub-title'>by Katie Han</div>
+                <div className='sub-title'>Powered by <div className='centillion'>Centillion</div></div>
             </div>
             { this.props.loaded ? 
-                <div className='button outline' onClick={this.onClickStart.bind(this)}>Start</div> : 
-                <div className='outline'>Loading...</div> }
+                <div className='button accent' onClick={this.onClickStart.bind(this)}>
+                    Watch your memories now ⟶
+                </div> : 
+                <div className='sub-title'>Loading...</div> }
             </>
             );
     }
