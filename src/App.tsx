@@ -1,5 +1,5 @@
 import { Component, createRef } from 'react';
-import Scene from './components/Scene'
+import { Scene } from './components/Scene';
 import MemoryPlayer from './components/MemoryPlayer';
 
 import ShareActivity, { ShareActivityType } from './components/ShareActivity';
@@ -21,6 +21,7 @@ interface StoryState {
     isAboutPage: boolean;
     isSceneLoaded: boolean;
     isSubscriptionPage: boolean;
+    currentSubscriptionFromClick: boolean;
 }
 
 class App extends Component<{}, StoryState> {
@@ -38,7 +39,8 @@ class App extends Component<{}, StoryState> {
             isLandingPage: true,
             isAboutPage: false,
             isSceneLoaded: false,
-            isSubscriptionPage: false
+            isSubscriptionPage: false,
+            currentSubscriptionFromClick: false
         };
     }
 
@@ -72,7 +74,7 @@ class App extends Component<{}, StoryState> {
         } else {
             const promptSubscription = this.state.currentMemoryIncrement();
             if (promptSubscription) {
-                this.startSubscriptionPage();
+                this.startSubscriptionPage(false);
             }
         }
     }
@@ -92,12 +94,12 @@ class App extends Component<{}, StoryState> {
         }
 
         if (promptSubscription) {
-            this.startSubscriptionPage();
+            this.startSubscriptionPage(false);
         }
     }
 
-    startSubscriptionPage() {
-        this.setState({ isSubscriptionPage: true });
+    startSubscriptionPage(fromClick: boolean = true) {
+        this.setState({ isSubscriptionPage: true, currentSubscriptionFromClick: fromClick });
         this.scene.current?.setSceneEnabled(false);
     }
 
@@ -127,7 +129,7 @@ class App extends Component<{}, StoryState> {
                 { this.state.isAboutPage ? <About close={this.endAboutPage.bind(this)}></About> : null }
                 { this.state.isSharingActivity ? <ShareActivity type={this.state.currentActivity} close={this.endActivity.bind(this)}></ShareActivity> : null }
                 { this.state.isPlayingMemory ? <MemoryPlayer name={this.state.currentMemoryName} url={this.state.currentMemoryUrl} close={this.endMemory.bind(this)}/> : null }
-                { this.state.isSubscriptionPage ? <Ending name={this.state.currentMemoryName} close={this.endSubscriptionPage.bind(this)}></Ending> : null }
+                { this.state.isSubscriptionPage ? <Ending name={this.state.currentMemoryName} fromClick={this.state.currentSubscriptionFromClick} close={this.endSubscriptionPage.bind(this)}></Ending> : null }
                 <Footer showTitle={!this.state.isLandingPage} allowAbout={true} triggerAbout={this.startAboutPage.bind(this)}></Footer>
                 <Scene ref={this.scene} finishLoading={this.finishLoading.bind(this)} startMemory={this.startMemory.bind(this)} startSubscription={this.startSubscriptionPage.bind(this)}></Scene>
             </div>

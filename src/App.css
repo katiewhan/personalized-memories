@@ -75,6 +75,11 @@
     text-align: center;
 }
 
+.p-title {
+    padding-bottom: 20px;
+    text-align: center;
+}
+
 .about {
     padding: 30px;
     overflow: auto;
@@ -128,8 +133,19 @@
 }
 
 .button.outline, .accent {
-    color:#F29810; /*#7BE4B2;*/
-    border-color: #F29810; /*#7BE4B2;*/
+    color: #F29810;
+    border-color: #F29810;
+}
+
+.button.outline:hover {
+    opacity: 1;
+    background-color: #F29810;
+    color: white;
+}
+
+.button.accent:hover {
+    opacity: 1;
+    text-decoration: underline;
 }
 
 .x-button {
@@ -141,14 +157,12 @@
 }
 
 .icon-button {
-    width: 40px;
-    height: 40px;
+    height: 50px;
     padding: 10px 5px;
 }
 
 .icon-button img, .x-button img {
-    width: 40px;
-    height: 40px;
+    height: 50px;
 }
 
 .button:hover, .x-button:hover, .icon-button:hover {
@@ -164,12 +178,14 @@
 
 .footer-overlay {
     position: absolute;
-    bottom: 100px;
+    bottom: 80px;
     right: 30px;
     background-color: black;
     width: 500px;
     z-index: 10;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .footer {

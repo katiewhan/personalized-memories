@@ -31,13 +31,9 @@ const AdOverlaysMap: { [name: string]: AdOverlay } = {
         timestamp: 15,
         imagePath: 'assets/images/carvana.png',
         style: {
-            right: '150px',
+            right: '100px',
             bottom: '50px'
         }
-    },
-    'RoadTrip-3': {
-        link: 'https://www.sixt.com/',
-        timestamp: 19
     },
     'Dumpling-2': {
         link: 'https://www.ubereats.com/',

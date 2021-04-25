@@ -23,6 +23,7 @@ declare global {
 
 interface PostProcessingProps {
     selectedObjects: Object3D[];
+    allObjects: Object3D[];
 }
 
 function PostProcessing(props: PostProcessingProps) {
@@ -44,7 +45,8 @@ function PostProcessing(props: PostProcessingProps) {
             <renderPass attachArray='passes' scene={scene} camera={camera} />
             {/* <shaderPass attachArray='passes' args={[AdditiveBlendingShader]} uniforms-tAdd-value={occlusionRenderTarget.texture} /> */}
             <bokehPass attachArray='passes' args={[scene, camera, bokehParams]} />
-            <outlinePass attachArray='passes' args={[resolution, scene, camera, props.selectedObjects]} />
+            <outlinePass attachArray='passes' args={[resolution, scene, camera, props.allObjects]}/>
+            <outlinePass attachArray='passes' args={[resolution, scene, camera, props.selectedObjects]} edgeThickness={4} edgeStrength={8}/>
         </effectComposer>
     );
 }

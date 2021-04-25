@@ -23,5 +23,10 @@ video {
 }
 
 a {
-  color: #CECECE;
+  color: #F29810;
+}
+
+p {
+  margin-block-start: 5px;
+  margin-block-end: 5px;
 }

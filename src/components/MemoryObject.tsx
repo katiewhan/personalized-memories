@@ -1,15 +1,9 @@
-import { Component } from 'react';
+import { Component, useEffect } from 'react';
 import { useFrame, useLoader } from 'react-three-fiber';
-import { Vector3, Texture, TextureLoader, Object3D, Mesh, MeshStandardMaterial } from 'three';
+import { Vector3, Texture, TextureLoader, Object3D } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
-function isMesh(object: Object3D): object is Mesh {
-    return object.type === 'Mesh';
-}
-
-function isMeshStandardMaterial(material: any): material is MeshStandardMaterial {
-    return material.type === 'MeshStandardMaterial';
-}
+import { isMesh, isMeshStandardMaterial } from './Scene';
 
 interface PrimitiveObjectProps {
     mesh: string;
@@ -19,6 +13,7 @@ interface PrimitiveObjectProps {
     spinning: boolean;
     onClick: () => void;
     hover: (object: Object3D, hovered: boolean) => void;
+    register: (object: Object3D, flag: boolean) => void;
 }
 
 function PrimitiveObject(props: PrimitiveObjectProps) {
@@ -27,16 +22,20 @@ function PrimitiveObject(props: PrimitiveObjectProps) {
     gltf.scene.traverse((object: Object3D) => {
         if (isMesh(object) && isMeshStandardMaterial(object.material)) {
             tex.flipY = false;
+            object.material.roughness = 0.8;
+            object.material.metalness = 0.3;
             object.material.map = tex;
         }
     });
+
+    useEffect(() => props.register(gltf.scene, props.spinning), [props.spinning, gltf.scene]);
 
     useFrame(() => {
         if (props.spinning) gltf.scene.rotateY(0.005);
     });
 
     const setHovered = (hovered: boolean) => {
-        props.hover(gltf.scene, hovered);
+        if (props.spinning) props.hover(gltf.scene, hovered);
     };
 
     return (
@@ -61,6 +60,7 @@ interface MemoryObjectProps {
     play: (name: string, url: string, increment: () => boolean) => void;
     prompt: () => void;
     hover: (object: Object3D, hovered: boolean) => void;
+    register: (object: Object3D, flag: boolean) => void;
 }
 
 interface MemoryObjectState {
@@ -82,7 +82,7 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
     
     componentDidMount() {
         const textureLoader = new TextureLoader();
-        textureLoader.load('assets/images/update-complete.png', (message) => this.message = message);
+        textureLoader.load('assets/images/updated.png', (message) => this.message = message);
 
         this.preloadMemory(this.state.count + 1);
     }
@@ -92,7 +92,7 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
     }
 
     onClick() {
-        if (!this.props.enabled) return;
+        if (!this.props.enabled || !this.state.isSpinning) return;
 
         if (this.updateTimeout) {
             window.clearTimeout(this.updateTimeout);
@@ -115,17 +115,21 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
     increaseCount() {
         let promptSubscription = false;
 
+        if (this.updateTimeout) {
+            window.clearTimeout(this.updateTimeout);
+            this.updateTimeout = undefined;
+        }
+
         const newCount = this.state.count + 1;
-        if (newCount < this.props.totalNum) {
+
+        if (newCount === this.props.totalNum) {
+            this.setState({ hasUpdate: false, isSpinning: false, currentTexturePath: this.props.texturePath + '-tex.png' });
+            promptSubscription = true;
+        } else if (newCount < this.props.totalNum) {
             this.updateTimeout = window.setTimeout(() => {
                 this.setState({ hasUpdate: true });
                 this.updateTimeout = undefined;
             }, 2000);
-        }
-
-        if (newCount === this.props.totalNum ) {
-            this.setState({ hasUpdate: false, isSpinning: false, currentTexturePath: this.props.texturePath + '-tex.png' });
-            promptSubscription = true;
         }
 
         this.setState({ count: newCount });
@@ -146,7 +150,7 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
     renderSprite() {
         const spritePos = new Vector3(this.props.position.x, this.props.position.y + 0.3, this.props.position.z);
         return (
-            <sprite position={spritePos} scale={[0.41, 0.24, 1]} renderOrder={9}>
+            <sprite position={spritePos} scale={[0.354, 0.23, 1]} renderOrder={9}>
                 <spriteMaterial attach='material' map={this.message} depthTest={false}/>
             </sprite>
         );
@@ -161,7 +165,8 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
                 scale={this.props.scale}
                 spinning={this.state.isSpinning}
                 onClick={this.onClick.bind(this)}
-                hover={this.props.hover} />
+                hover={this.props.hover} 
+                register={this.props.register} />
             {this.state.hasUpdate ? this.renderSprite() : null}
             </>
         );
