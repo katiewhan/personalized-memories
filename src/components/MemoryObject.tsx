@@ -72,11 +72,13 @@ interface MemoryObjectState {
 
 class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
     private message?: Texture;
+    private messageAudio: HTMLAudioElement;
     private memoryCache: Map<string, string> = new Map();
     private updateTimeout?: number;
 
     constructor(props: MemoryObjectProps) {
         super(props);
+        this.messageAudio = new Audio('assets/sounds/alert.mp3');
         this.state = { count: 1, hasUpdate: false, isSpinning: true, currentTexturePath: this.props.texturePath + '.png' };
     }
     
@@ -128,8 +130,9 @@ class MemoryObject extends Component<MemoryObjectProps, MemoryObjectState> {
         } else if (newCount < this.props.totalNum) {
             this.updateTimeout = window.setTimeout(() => {
                 this.setState({ hasUpdate: true });
+                this.messageAudio.play();
                 this.updateTimeout = undefined;
-            }, 2000);
+            }, 600);
         }
 
         this.setState({ count: newCount });

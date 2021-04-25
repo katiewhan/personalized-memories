@@ -26,8 +26,7 @@ class Landing extends Component<LandingProps, LandingState> {
     constructor(props: LandingProps) {
         super(props);
         this.state = { playing: false };
-        this.audio = new Audio('https://personalized-memories.s3.amazonaws.com/videos/INTRO.wav');
-        this.audio.crossOrigin = 'anonymous';
+        this.audio = new Audio('assets/sounds/INTRO.wav');
 
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         this.audioContext = new AudioContext();
